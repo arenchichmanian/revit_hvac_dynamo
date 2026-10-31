@@ -12,13 +12,13 @@
 #   v3.0  options string: style, transparency, scale, direction, existing
 #
 # Inputs:
-#   IN[0] filter text ("contains" match)              e.g. FCU-LI-L0-016.1
+#   IN[0] filter text ("contains" match)              e.g. FCU-L0-016.1
 #   IN[1] view name prefix (may be empty)             e.g. 3D
 #   IN[2] section box margin in mm                    e.g. 300
 #   IN[3] max hops (safety limit for the duct walk)   e.g. 100
 #   IN[4] run (True/False)
-#   IN[5] parameter to filter on  (optional)          default DLB-Designation
-#   IN[6] parameter to name views (optional)          default DLB-Designation
+#   IN[5] parameter to filter on  (optional)          default Mark
+#   IN[6] parameter to name views (optional)          default Mark
 #   IN[7] options (optional): "key=value; key=value"
 #           style=edges|shaded|wireframe|hlr   (default edges)
 #           transparency=0..90                 (default 0 = opaque)
@@ -252,7 +252,7 @@ def walk_side(roots, blocked, max_hops, min_len_ft, through_names):
 # ------------------------------------------------------------------
 # Inputs
 # ------------------------------------------------------------------
-DEFAULT_PARAM = "DLB-Designation"
+DEFAULT_PARAM = "Mark"
 
 DEFAULT_OPTIONS = {
     "style": "edges",
@@ -293,7 +293,7 @@ def inp(i, default):
 
 
 def norm(text):
-    """Lowercase and treat '.' like '-' so FCU.LI.L0.016 == FCU-LI-L0-016."""
+    """Lowercase and treat '.' like '-' so FCU.L0.016 == FCU-L0-016."""
     return str(text).strip().lower().replace('.', '-')
 
 

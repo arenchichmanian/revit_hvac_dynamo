@@ -24,13 +24,13 @@ blocks are plain input nodes that feed it.
 
    | Block to add | Value | Connect to |
    |--------------|-------|------------|
-   | String | `FCU-LI-L0-095` | IN[0] |
+   | String | `FCU-L0-095` | IN[0] |
    | String | `3D` | IN[1] |
    | Integer Slider (0-1000, step 50) | 300 | IN[2] |
    | Integer Slider (10-500, step 10) | 100 | IN[3] |
    | Boolean | `False` | IN[4] |
-   | String | `DLB-Designation` | IN[5] |
-   | String | `DLB-Designation` | IN[6] |
+   | String | `Mark` | IN[5] |
+   | String | `Mark` | IN[6] |
    | String | options text below | IN[7] |
 
 4. Add a **Watch** node and connect the Python node's `OUT` to it.
@@ -40,13 +40,13 @@ blocks are plain input nodes that feed it.
 
 | Input | Node | Default | Meaning |
 |-------|------|---------|---------|
-| IN[0] | String | `FCU-LI-L0-095` | Filter text (contains match; `-` and `.` treated the same, case ignored) |
+| IN[0] | String | `FCU-L0-095` | Filter text (contains match; `-` and `.` treated the same, case ignored) |
 | IN[1] | String | `3D` | View name prefix |
 | IN[2] | Integer Slider (0-1000, step 50) | 300 | Section box margin in mm |
 | IN[3] | Integer Slider (10-500, step 10) | 100 | Max hops when walking the network |
 | IN[4] | Boolean | `False` | Run. False = preview, nothing changed |
-| IN[5] | String | `DLB-Designation` | Parameter the filter searches |
-| IN[6] | String | `DLB-Designation` | Parameter used to name the view |
+| IN[5] | String | `Mark` | Parameter the filter searches |
+| IN[6] | String | `Mark` | Parameter used to name the view |
 | IN[7] | String | see below | Options |
 
 All 8 ports must be wired. Run mode: Manual.
