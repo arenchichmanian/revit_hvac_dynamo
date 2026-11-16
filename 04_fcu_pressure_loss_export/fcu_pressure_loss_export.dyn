@@ -1,0 +1,466 @@
+{
+  "Uuid": "e52d7e9c-8210-4480-8865-db26d48db82c",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Home",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "FCU-LI-L0-095",
+      "Description": "Creates a string.",
+      "Id": "ce898ffd0a314057b34c7db3cc2671fb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cfef0b00a3e040e0b8822b00ee7fd016",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "",
+      "Description": "Creates a string.",
+      "Id": "da6f612b7b9e4e29ba9a20b3a34fb539",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9447986855e64cdf917ddda554b4286b",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 100,
+      "MaximumValue": 500,
+      "MinimumValue": 0,
+      "StepValue": 10,
+      "Description": "A slider that produces integer values.",
+      "Id": "fb5eaf90804c42a8986706883a458fb8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "64b96b7599ce416c804ee83057e842a7",
+          "Name": "",
+          "Description": "Int64",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 100,
+      "MaximumValue": 500,
+      "MinimumValue": 10,
+      "StepValue": 10,
+      "Description": "A slider that produces integer values.",
+      "Id": "9af795c5f70c48eaa854b6c1ed4b1a85",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4475598476eb48d783bcf2d32c7937a8",
+          "Name": "",
+          "Description": "Int64",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Description": "Selection between a true and false.",
+      "Id": "5f11ba6ea98548e28092fd130a90d328",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "eca5393d71d74bf1b3347d1cc7e6efbb",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "DLB-Designation",
+      "Description": "Creates a string.",
+      "Id": "0b49703315184b17a230e64ff7192486",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "91d7fa37c2844a9c9de6d7389014bcb9",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "through=fcu-pl, plenum; safety=10; fcuflow=; numparam=DLB_ELEMENT Number",
+      "Description": "Creates a string.",
+      "Id": "c59eba3efa674b0a91b7747e960d7d04",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "412cfc41b93c477f97e8ca1ee35e542f",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# fcu_pressure_loss_export.py  (v1.1)\r\n# Dynamo for Revit - Python Script node, CPython3 engine\r\n# Author: Aren  |  License: MIT (see LICENSE in the repo root)\r\n# Writes an Excel pressure-loss sheet for each matched FCU: one row per element\r\n# of the longest route (return air terminal -> FCU -> supply air terminal),\r\n# with flow, size, length and a suggested ASHRAE fitting code, plus the\r\n# formulas for velocity, Reynolds number, friction and pressure loss.\r\n# It reads the model only: nothing in Revit is changed.\r\n#\r\n# The workbook also gets a \"Noise inputs\" sheet: for the return and the supply\r\n# side of each FCU, the duct inputs of the noise calculation (smallest duct\r\n# dimension, duct length, elbows, critical outlet area and flow), taken along\r\n# the route from the FCU to the nearest air terminal.\r\n#\r\n# Version history\r\n#   v1.1  \"Noise inputs\" sheet added\r\n#   v1.0  first version\r\n#\r\n# Cells left YELLOW in the workbook must be filled in by hand:\r\n#   - the loss coefficient of each fitting (from the ASHRAE Duct Fitting\r\n#     Database, using the suggested code and the sizes in the notes column)\r\n#   - the fixed pressure loss of grilles, diffusers, dampers and attenuators\r\n#     (manufacturer data)\r\n#   - the FCU flow, when the air terminals carry no flow in Revit\r\n#\r\n# Flow in each element = sum of the flows of the air terminals beyond it.\r\n# If the air terminals have no flow in Revit, the FCU flow is shared equally\r\n# between the terminals of that side.\r\n#\r\n# Inputs:\r\n#   IN[0] filter text (\"contains\" match)               e.g. FCU-LI-L0-095\r\n#   IN[1] output folder (empty = Documents\\FCU pressure loss)\r\n#   IN[2] minimum duct length in mm (0 = rule off)     e.g. 100\r\n#         use the SAME value as in the numbering script\r\n#   IN[3] max hops (safety limit for the duct walk)    e.g. 100\r\n#   IN[4] run (False = preview only, True = write the Excel file)\r\n#   IN[5] parameter to filter on                       default DLB-Designation\r\n#   IN[6] options: \"key=value; key=value\"\r\n#           through=word, word      (default fcu-pl, plenum)\r\n#           safety=number           (default 10) safety margin in percent\r\n#           fcuflow=parameter name  (default empty) FCU parameter holding the\r\n#                                   design airflow; empty = type it in Excel\r\n#           numparam=parameter name (default DLB_ELEMENT Number) only used to\r\n#                                   check that the numbering script was run\r\n# Special filter parameter values: @type, @family, @familytype\r\n\r\nimport os\r\nimport math\r\nimport time\r\nimport zipfile\r\nimport traceback\r\nimport clr\r\n\r\nclr.AddReference('RevitAPI')\r\nclr.AddReference('RevitServices')\r\n\r\nfrom Autodesk.Revit.DB import (\r\n    FilteredElementCollector, BuiltInCategory, BuiltInParameter,\r\n    Element, FamilyInstance, MEPCurve, Domain, StorageType, LocationCurve\r\n)\r\nfrom RevitServices.Persistence import DocumentManager\r\n\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\nVERSION = \"v1.1\"\r\n\r\n# ==================================================================\r\n# EDIT HERE: names and suggested ASHRAE codes\r\n# ==================================================================\r\n# Suggested ASHRAE fitting code by (kind of fitting, \"rect\"/\"round\" or side).\r\n# These are starting points taken from past calculations: always check them.\r\nASHRAE_CODES = {\r\n    (\"elbow\", \"rect\"): \"CR3-5\",\r\n    (\"elbow\", \"round\"): \"CD3-1\",\r\n    (\"transition\", \"return\"): \"ER4-2\",\r\n    (\"transition\", \"supply\"): \"SR4-1\",\r\n    (\"tee\", \"supply\"): \"SR5-13\",\r\n    (\"tap\", \"supply\"): \"SD1-1\",\r\n    (\"plenum\", \"supply\"): \"SD1-1\",\r\n}\r\n\r\n# Duct accessory names: (word in the family or type name, name on the sheet).\r\n# The first match wins. No match = the family name is used.\r\nACCESSORY_NAMES = [\r\n    (\"mfsd\", \"MFSD\"),\r\n    (\"mfd\", \"MFD\"),\r\n    (\"fsd\", \"FSD\"),\r\n    (\"vcd\", \"VCD\"),\r\n    (\"attenuator\", \"Attenuator\"),\r\n    (\"dac-at\", \"Attenuator\"),\r\n    (\"silencer\", \"Attenuator\"),\r\n]\r\n\r\n# Fixed pressure loss in Pa by sheet name (manufacturer data). Empty = the\r\n# cell stays yellow. Example: {\"Attenuator\": 15, \"MFD\": 4}\r\nFIXED_LOSS = {}\r\n\r\n\r\n# ---- COMMON BLOCK v2 (begin) -------------------------------------------\r\n# Identical in scripts 01, 02, 04 and 05. Change it in common/network_walk.py\r\n# first, then paste it into every script. It needs only the imports above\r\n# (BuiltInCategory, BuiltInParameter, MEPCurve, FamilyInstance, Domain,\r\n# LocationCurve) and no global variables.\r\n# v2: equipment whose family name contains one of `through_names` (for example\r\n# a plenum) is walked through as part of the network.\r\n\r\n# Categories that count as part of an equipment's duct network\r\nALLOWED_CATS = {\r\n    int(BuiltInCategory.OST_DuctCurves),\r\n    int(BuiltInCategory.OST_FlexDuctCurves),\r\n    int(BuiltInCategory.OST_DuctFitting),\r\n    int(BuiltInCategory.OST_DuctAccessory),\r\n    int(BuiltInCategory.OST_DuctTerminal),\r\n}\r\n\r\nDUCT_CAT = int(BuiltInCategory.OST_DuctCurves)\r\nEQUIPMENT_CAT = int(BuiltInCategory.OST_MechanicalEquipment)\r\n\r\n\r\ndef eid_int(eid):\r\n    \"\"\"ElementId -> int. Works on old and new Revit versions.\"\"\"\r\n    try:\r\n        return eid.Value            # Revit 2024+\r\n    except AttributeError:\r\n        return eid.IntegerValue     # older versions\r\n\r\n\r\ndef family_name_lower(el):\r\n    \"\"\"Lowercase family name of a placed family, or '' if unavailable.\"\"\"\r\n    try:\r\n        return str(el.Symbol.FamilyName).lower()\r\n    except Exception:\r\n        return \"\"\r\n\r\n\r\ndef is_pass_through(el, through_names):\r\n    \"\"\"True for mechanical equipment whose family name contains a through word.\"\"\"\r\n    if not through_names:\r\n        return False\r\n    cat = el.Category\r\n    if cat is None or eid_int(cat.Id) != EQUIPMENT_CAT:\r\n        return False\r\n    fam = family_name_lower(el)\r\n    for word in through_names:\r\n        if word in fam:\r\n            return True\r\n    return False\r\n\r\n\r\ndef is_allowed(el, through_names=()):\r\n    cat = el.Category\r\n    if cat is None:\r\n        return False\r\n    if eid_int(cat.Id) in ALLOWED_CATS:\r\n        return True\r\n    return is_pass_through(el, through_names)\r\n\r\n\r\ndef duct_length_ft(el):\r\n    \"\"\"Length of a duct in feet, or None if it cannot be read.\"\"\"\r\n    try:\r\n        p = el.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH)\r\n        if p is not None and p.HasValue:\r\n            return p.AsDouble()\r\n    except Exception:\r\n        pass\r\n    try:\r\n        loc = el.Location\r\n        if isinstance(loc, LocationCurve):\r\n            return loc.Curve.Length\r\n    except Exception:\r\n        pass\r\n    return None\r\n\r\n\r\ndef is_small_duct(el, min_len_ft):\r\n    \"\"\"True for a rigid duct at or below the minimum length (no pressure drop).\"\"\"\r\n    if min_len_ft <= 0:\r\n        return False\r\n    cat = el.Category\r\n    if cat is None or eid_int(cat.Id) != DUCT_CAT:\r\n        return False\r\n    length = duct_length_ft(el)\r\n    return length is not None and length <= min_len_ft + 1e-6\r\n\r\n\r\ndef get_connectors(el):\r\n    \"\"\"Return all connectors of a duct curve or a family instance.\"\"\"\r\n    try:\r\n        if isinstance(el, MEPCurve):\r\n            return list(el.ConnectorManager.Connectors)\r\n        if isinstance(el, FamilyInstance):\r\n            mep = el.MEPModel\r\n            if mep is not None and mep.ConnectorManager is not None:\r\n                return list(mep.ConnectorManager.Connectors)\r\n    except Exception:\r\n        pass\r\n    return []\r\n\r\n\r\ndef neighbors_of_connector(c, self_id, through_names):\r\n    \"\"\"Allowed elements joined to connector c (never the owner itself).\"\"\"\r\n    out = []\r\n    try:\r\n        if not c.IsConnected:\r\n            return out\r\n        for ref in c.AllRefs:\r\n            o = ref.Owner\r\n            if o is None:\r\n                continue\r\n            if eid_int(o.Id) == self_id:\r\n                continue\r\n            if not isinstance(o, (MEPCurve, FamilyInstance)):\r\n                continue            # skips the logical system element\r\n            if not is_allowed(o, through_names):\r\n                continue            # skips other equipment\r\n            out.append(o)\r\n    except Exception:\r\n        pass\r\n    return out\r\n\r\n\r\ndef element_neighbors(el, through_names):\r\n    \"\"\"Allowed elements reachable from el through its duct (HVAC) connectors.\"\"\"\r\n    sid = eid_int(el.Id)\r\n    out = []\r\n    for c in get_connectors(el):\r\n        try:\r\n            if c.Domain != Domain.DomainHvac:\r\n                continue\r\n        except Exception:\r\n            continue\r\n        out.extend(neighbors_of_connector(c, sid, through_names))\r\n    return out\r\n\r\n\r\ndef walk_side(roots, blocked, max_hops, min_len_ft, through_names):\r\n    \"\"\"\r\n    Breadth-first walk outward from the elements touching an equipment connector.\r\n    roots:         elements touching the connector(s) of the side being walked.\r\n    blocked:       element ids that belong to another side (never entered).\r\n    max_hops:      safety limit on how far the walk goes.\r\n    min_len_ft:    short-duct threshold in feet (0 = rule off).\r\n    through_names: lowercase words; equipment whose family name contains one\r\n                   of them is walked through (for example a plenum).\r\n    Returns (order, depth, parent, skipped, truncated, overlaps).\r\n      order:   elements in discovery order (short ducts included)\r\n      depth:   id -> distance in COUNTED elements; a short duct has the same\r\n               depth as the element it was reached from\r\n      parent:  id -> id of the element it was reached from (None for roots)\r\n      skipped: ids of short ducts (walked through, never counted)\r\n    \"\"\"\r\n    depth, parent, order = {}, {}, []\r\n    skipped = set()\r\n    overlaps = 0\r\n    frontier = []\r\n    for r in roots:\r\n        rid = eid_int(r.Id)\r\n        if rid in depth:\r\n            continue\r\n        if rid in blocked:\r\n            overlaps += 1\r\n            continue\r\n        small = is_small_duct(r, min_len_ft)\r\n        if small:\r\n            skipped.add(rid)\r\n        depth[rid] = 0 if small else 1\r\n        parent[rid] = None\r\n        order.append(r)\r\n        frontier.append(r)\r\n\r\n    hops = 1\r\n    while frontier and hops < max_hops:\r\n        nxt = []\r\n        for el in frontier:\r\n            eid = eid_int(el.Id)\r\n            for o in element_neighbors(el, through_names):\r\n                oid = eid_int(o.Id)\r\n                if oid in depth:\r\n                    continue\r\n                if oid in blocked:\r\n                    overlaps += 1\r\n                    continue\r\n                small = is_small_duct(o, min_len_ft)\r\n                if small:\r\n                    skipped.add(oid)\r\n                depth[oid] = depth[eid] + (0 if small else 1)\r\n                parent[oid] = eid\r\n                order.append(o)\r\n                nxt.append(o)\r\n        frontier = nxt\r\n        hops += 1\r\n    return order, depth, parent, skipped, len(frontier) > 0, overlaps\r\n\r\n# ---- COMMON BLOCK v2 (end) ---------------------------------------------\r\n\r\n\r\n# ------------------------------------------------------------------\r\n# Inputs\r\n# ------------------------------------------------------------------\r\nDEFAULT_FILTER_PARAM = \"DLB-Designation\"\r\n\r\nDEFAULT_OPTIONS = {\r\n    \"through\": \"fcu-pl, plenum\",\r\n    \"safety\": \"10\",\r\n    \"fcuflow\": \"\",\r\n    \"numparam\": \"DLB_ELEMENT Number\",\r\n}\r\n\r\nFT_TO_MM = 304.8\r\nCFS_TO_LPS = 28.316846592           # cubic feet per second -> litres per second\r\n\r\nSYS_SUPPLY, SYS_RETURN, SYS_EXHAUST = 1, 2, 3\r\nDIR_IN, DIR_OUT = 1, 2\r\nCONNECTOR_TYPE_CURVE = 2            # a connector on the side of a duct (tap)\r\n\r\nTERMINAL_CAT = int(BuiltInCategory.OST_DuctTerminal)\r\nFLEX_CAT = int(BuiltInCategory.OST_FlexDuctCurves)\r\nFITTING_CAT = int(BuiltInCategory.OST_DuctFitting)\r\nACCESSORY_CAT = int(BuiltInCategory.OST_DuctAccessory)\r\n\r\n\r\ndef inp(i, default):\r\n    \"\"\"Read IN[i] as trimmed text; use default if missing, None or empty.\"\"\"\r\n    try:\r\n        v = IN[i]\r\n    except Exception:\r\n        return default\r\n    if v is None:\r\n        return default\r\n    s = str(v).strip()\r\n    return s if s else default\r\n\r\n\r\ndef norm(text):\r\n    \"\"\"Lowercase and treat '.' like '-' so FCU.LI.L0.016 == FCU-LI-L0-016.\"\"\"\r\n    return str(text).strip().lower().replace('.', '-')\r\n\r\n\r\ndef parse_options(text):\r\n    \"\"\"'a=1; b=2' -> ({'a': '1', 'b': '2'} merged over defaults, [unknown parts]).\"\"\"\r\n    opts = dict(DEFAULT_OPTIONS)\r\n    unknown = []\r\n    for part in text.replace(\"\\n\", \";\").split(\";\"):\r\n        part = part.strip()\r\n        if not part:\r\n            continue\r\n        if \"=\" not in part:\r\n            unknown.append(part)\r\n            continue\r\n        k, v = part.split(\"=\", 1)\r\n        k = k.strip().lower()\r\n        v = v.strip()\r\n        if k in opts:\r\n            opts[k] = v\r\n        else:\r\n            unknown.append(part)\r\n    return opts, unknown\r\n\r\n\r\nfilter_text  = norm(inp(0, \"\"))\r\nOUT_FOLDER   = inp(1, \"\")\r\nmin_len_mm   = float(inp(2, \"100\"))\r\nmin_len_ft   = min_len_mm / FT_TO_MM\r\nmax_hops     = int(float(inp(3, \"100\")))\r\nrun          = bool(IN[4])\r\nFILTER_PARAM = inp(5, DEFAULT_FILTER_PARAM)\r\n\r\nOPTS, UNKNOWN_OPTS = parse_options(inp(6, \"\"))\r\nTHROUGH_NAMES = tuple(t.strip().lower() for t in OPTS[\"through\"].split(\",\")\r\n                      if t.strip())\r\nFCU_FLOW_PARAM = OPTS[\"fcuflow\"]\r\nNUM_PARAM = OPTS[\"numparam\"]\r\ntry:\r\n    SAFETY = float(OPTS[\"safety\"])\r\nexcept Exception:\r\n    SAFETY = None\r\n\r\n\r\ndef option_errors():\r\n    \"\"\"Problems with the inputs. Empty list means all good.\"\"\"\r\n    errs = []\r\n    for u in UNKNOWN_OPTS:\r\n        errs.append(\"Unknown option '{}'. Allowed keys: through, safety, fcuflow, \"\r\n                    \"numparam.\".format(u))\r\n    if SAFETY is None or SAFETY < 0:\r\n        errs.append(\"safety must be a number of 0 or more (got '{}').\"\r\n                    .format(OPTS[\"safety\"]))\r\n    if min_len_mm < 0:\r\n        errs.append(\"minimum duct length cannot be negative.\")\r\n    if max_hops < 1:\r\n        errs.append(\"max hops must be 1 or more.\")\r\n    return errs\r\n\r\n\r\n# ------------------------------------------------------------------\r\n# Revit helpers\r\n# ------------------------------------------------------------------\r\ndef get_name(el):\r\n    \"\"\"\r\n    Read an element's name through the base class (CPython3 workaround for\r\n    'TypeError: property cannot be read'), falling back to built-in parameters.\r\n    \"\"\"\r\n    if el is None:\r\n        return \"\"\r\n    try:\r\n        return str(Element.Name.__get__(el))\r\n    except Exception:\r\n        pass\r\n    for bip in (BuiltInParameter.SYMBOL_NAME_PARAM, BuiltInParameter.VIEW_NAME):\r\n        try:\r\n            p = el.get_Parameter(bip)\r\n            if p is not None:\r\n                s = p.AsString()\r\n                if s:\r\n                    return str(s)\r\n        except Exception:\r\n            pass\r\n    return \"\"\r\n\r\n\r\ndef get_family_name(etype):\r\n    \"\"\"Family name of a family type (empty string if unavailable).\"\"\"\r\n    if etype is None:\r\n        return \"\"\r\n    try:\r\n        return str(etype.FamilyName)\r\n    except Exception:\r\n        pass\r\n    try:\r\n        p = etype.get_Parameter(BuiltInParameter.SYMBOL_FAMILY_NAME_PARAM)\r\n        if p is not None:\r\n            s = p.AsString()\r\n            if s:\r\n                return str(s)\r\n    except Exception:\r\n        pass\r\n    return \"\"\r\n\r\n\r\ndef type_names(el):\r\n    \"\"\"(family name, type name) of an element; empty strings if unavailable.\"\"\"\r\n    try:\r\n        etype = doc.GetElement(el.GetTypeId())\r\n    except Exception:\r\n        etype = None\r\n    if etype is None:\r\n        return \"\", \"\"\r\n    return get_family_name(etype), get_name(etype)\r\n\r\n\r\ndef get_param_value(el, spec):\r\n    \"\"\"\r\n    Text value of the parameter called `spec`, or None if missing/empty.\r\n    Looks at the placed element first, then at its type.\r\n    Special specs: @type, @family, @familytype.\r\n    \"\"\"\r\n    key = spec.strip().lower()\r\n    etype = doc.GetElement(el.GetTypeId())\r\n\r\n    if key in (\"@type\", \"@family\", \"@familytype\"):\r\n        if etype is None:\r\n            return None\r\n        fam = get_family_name(etype)\r\n        typ = get_name(etype)\r\n        if key == \"@type\":\r\n            val = typ\r\n        elif key == \"@family\":\r\n            val = fam\r\n        else:\r\n            val = fam + \" - \" + typ\r\n        val = val.strip()\r\n        return val if val else None\r\n\r\n    p = el.LookupParameter(spec.strip())\r\n    if p is None and etype is not None:\r\n        p = etype.LookupParameter(spec.strip())\r\n    if p is None:\r\n        return None\r\n    val = p.AsString()\r\n    if not val:\r\n        val = p.AsValueString()\r\n    return val.strip() if val else None\r\n\r\n\r\ndef find_targets():\r\n    \"\"\"(element, filter value) for mechanical equipment matching the filter.\"\"\"\r\n    matched = []\r\n    col = (FilteredElementCollector(doc)\r\n           .OfCategory(BuiltInCategory.OST_MechanicalEquipment)\r\n           .WhereElementIsNotElementType())\r\n    for el in col:\r\n        if not isinstance(el, FamilyInstance):\r\n            continue\r\n        if is_pass_through(el, THROUGH_NAMES):\r\n            continue                # a plenum is part of a route, never a target\r\n        val = get_param_value(el, FILTER_PARAM)\r\n        if val and filter_text in norm(val):\r\n            matched.append((el, val))\r\n    matched.sort(key=lambda t: t[1])\r\n    return matched\r\n\r\n\r\ndef as_number(value):\r\n    \"\"\"Enum or number -> int, or None. Enums are plain ints in CPython3.\"\"\"\r\n    try:\r\n        return int(value)\r\n    except Exception:\r\n        pass\r\n    text = str(value).lower()\r\n    if \"supply\" in text:\r\n        return SYS_SUPPLY\r\n    if \"return\" in text:\r\n        return SYS_RETURN\r\n    if \"exhaust\" in text:\r\n        return SYS_EXHAUST\r\n    if \"curve\" in text:\r\n        return CONNECTOR_TYPE_CURVE\r\n    return None\r\n\r\n\r\ndef hvac_connectors(el):\r\n    out = []\r\n    for c in get_connectors(el):\r\n        try:\r\n            if c.Domain != Domain.DomainHvac:\r\n                continue\r\n        except Exception:\r\n            continue\r\n        out.append(c)\r\n    return out\r\n\r\n\r\ndef find_fcu_connectors(fcu):\r\n    \"\"\"\r\n    Returns (return_connectors, supply_connectors, note). Same rules as the\r\n    numbering script: system type first (2 = Return Air, 1 = Supply Air),\r\n    Exhaust Air as return, then the flow direction as a last resort.\r\n    \"\"\"\r\n    hvac = hvac_connectors(fcu)\r\n    ret, sup, exh, seen = [], [], [], []\r\n    for c in hvac:\r\n        try:\r\n            st = as_number(c.DuctSystemType)\r\n        except Exception:\r\n            st = None\r\n        seen.append(\"?\" if st is None else str(st))\r\n        if st == SYS_RETURN:\r\n            ret.append(c)\r\n        elif st == SYS_SUPPLY:\r\n            sup.append(c)\r\n        elif st == SYS_EXHAUST:\r\n            exh.append(c)\r\n\r\n    note = \"\"\r\n    if not ret and exh:\r\n        ret = exh\r\n        note = \"no Return Air connector, used the Exhaust Air connector as return\"\r\n\r\n    if not ret or not sup:\r\n        ret2, sup2 = [], []\r\n        for c in hvac:\r\n            try:\r\n                d = as_number(c.Direction)\r\n            except Exception:\r\n                d = None\r\n            if d == DIR_IN:\r\n                ret2.append(c)\r\n            elif d == DIR_OUT:\r\n                sup2.append(c)\r\n        if ret2 and sup2:\r\n            ret, sup = ret2, sup2\r\n            note = (\"system types not usable ({}), sides taken from the flow \"\r\n                    \"direction (In = return, Out = supply)\".format(\", \".join(seen)))\r\n        else:\r\n            note = \"duct connectors found: {} (system types: {})\".format(\r\n                len(hvac), \", \".join(seen) or \"none\")\r\n    return ret, sup, note\r\n\r\n\r\ndef longest_route(order, depth, parent, skipped):\r\n    \"\"\"Counted elements along the deepest path, listed from the FCU outward.\"\"\"\r\n    counted = [e for e in order if eid_int(e.Id) not in skipped]\r\n    if not counted:\r\n        return []\r\n    by_id = {}\r\n    for e in order:\r\n        by_id[eid_int(e.Id)] = e\r\n    leaf = max(counted, key=lambda e: (depth[eid_int(e.Id)], -eid_int(e.Id)))\r\n    route = []\r\n    cur = eid_int(leaf.Id)\r\n    while cur is not None:\r\n        if cur not in skipped:\r\n            route.append(by_id[cur])\r\n        cur = parent[cur]\r\n    route.reverse()\r\n    return route\r\n\r\n\r\ndef cat_int(el):\r\n    cat = el.Category\r\n    return eid_int(cat.Id) if cat is not None else None\r\n\r\n\r\ndef conn_size(c):\r\n    \"\"\"('rect', width mm, height mm) or ('round', diameter mm) or None.\"\"\"\r\n    try:\r\n        w, h = c.Width, c.Height\r\n        if w > 0 and h > 0:\r\n            return (\"rect\", w * FT_TO_MM, h * FT_TO_MM)\r\n    except Exception:\r\n        pass\r\n    try:\r\n        r = c.Radius\r\n        if r > 0:\r\n            return (\"round\", 2.0 * r * FT_TO_MM)\r\n    except Exception:\r\n        pass\r\n    return None\r\n\r\n\r\ndef size_text(size):\r\n    if size is None:\r\n        return \"?\"\r\n    if size[0] == \"rect\":\r\n        return \"{:.0f}x{:.0f}\".format(size[1], size[2])\r\n    return \"dia {:.0f}\".format(size[1])\r\n\r\n\r\ndef connector_to(el, other_id):\r\n    \"\"\"The duct connector of el that is joined to the element with id other_id.\"\"\"\r\n    for c in hvac_connectors(el):\r\n        try:\r\n            if not c.IsConnected:\r\n                continue\r\n            for ref in c.AllRefs:\r\n                o = ref.Owner\r\n                if o is not None and eid_int(o.Id) == other_id:\r\n                    return c\r\n        except Exception:\r\n            pass\r\n    return None\r\n\r\n\r\ndef is_tap(el):\r\n    \"\"\"True if one connector of the fitting sits on the side of a duct.\"\"\"\r\n    sid = eid_int(el.Id)\r\n    for c in hvac_connectors(el):\r\n        try:\r\n            for ref in c.AllRefs:\r\n                o = ref.Owner\r\n                if o is None or eid_int(o.Id) == sid:\r\n                    continue\r\n                if as_number(ref.ConnectorType) == CONNECTOR_TYPE_CURVE:\r\n                    return True\r\n        except Exception:\r\n            pass\r\n    return False\r\n\r\n\r\ndef bend_angle(c1, c2):\r\n    \"\"\"Bend between two connectors in degrees (0 = straight through), or None.\"\"\"\r\n    try:\r\n        z1 = c1.CoordinateSystem.BasisZ\r\n        z2 = c2.CoordinateSystem.BasisZ\r\n        return abs(180.0 - math.degrees(z1.AngleTo(z2)))\r\n    except Exception:\r\n        return None\r\n\r\n\r\ndef connector_distance_m(c1, c2):\r\n    try:\r\n        return c1.Origin.DistanceTo(c2.Origin) * FT_TO_MM / 1000.0\r\n    except Exception:\r\n        return None\r\n\r\n\r\ndef terminal_flow_lps(el):\r\n    \"\"\"Design flow of an air terminal in L/s, or None if not set in Revit.\"\"\"\r\n    try:\r\n        p = el.get_Parameter(BuiltInParameter.RBS_DUCT_FLOW_PARAM)\r\n        if p is not None and p.HasValue:\r\n            v = p.AsDouble() * CFS_TO_LPS\r\n            if v > 0.01:\r\n                return v\r\n    except Exception:\r\n        pass\r\n    return None\r\n\r\n\r\ndef read_fcu_flow(fcu):\r\n    \"\"\"FCU design flow in L/s from the 'fcuflow' parameter, or None.\"\"\"\r\n    if not FCU_FLOW_PARAM:\r\n        return None\r\n    try:\r\n        p = fcu.LookupParameter(FCU_FLOW_PARAM)\r\n        if p is None:\r\n            etype = doc.GetElement(fcu.GetTypeId())\r\n            if etype is not None:\r\n                p = etype.LookupParameter(FCU_FLOW_PARAM)\r\n        if p is None:\r\n            return None\r\n        if p.StorageType == StorageType.Double:\r\n            try:                    # the displayed value, e.g. \"74.0 L/s\"\r\n                text = (p.AsValueString() or \"\").replace(\",\", \".\").split()\r\n                return float(text[0])\r\n            except Exception:\r\n                return p.AsDouble() * CFS_TO_LPS    # internal unit is ft3/s\r\n        if p.StorageType == StorageType.Integer:\r\n            return float(p.AsInteger())\r\n        s = (p.AsString() or \"\").lower().replace(\"l/s\", \"\").strip()\r\n        return float(s) if s else None\r\n    except Exception:\r\n        return None\r\n\r\n\r\ndef read_number(el):\r\n    \"\"\"The element's number as an int, or None if the parameter is missing.\"\"\"\r\n    try:\r\n        p = el.LookupParameter(NUM_PARAM)\r\n        if p is None:\r\n            return None\r\n        if p.StorageType == StorageType.Integer:\r\n            return p.AsInteger()\r\n        s = p.AsString()\r\n        return int(s) if s and s.strip().isdigit() else 0\r\n    except Exception:\r\n        return None\r\n\r\n\r\n# ------------------------------------------------------------------\r\n# Flow and classification\r\n# ------------------------------------------------------------------\r\ndef side_flows(order, parent):\r\n    \"\"\"\r\n    For one side: (flow, share, terminals, complete)\r\n      flow[id]  = sum of the Revit flows of the air terminals beyond the element\r\n      share[id] = fraction of the side's terminals beyond the element\r\n      complete  = True if every terminal of the side has a flow in Revit\r\n    'Beyond' = further from the FCU, following the walk.\r\n    \"\"\"\r\n    flow, count = {}, {}\r\n    terminals, complete = 0, True\r\n    for e in order:\r\n        eid = eid_int(e.Id)\r\n        flow[eid] = 0.0\r\n        count[eid] = 0\r\n        if cat_int(e) == TERMINAL_CAT:\r\n            terminals += 1\r\n            count[eid] = 1\r\n            q = terminal_flow_lps(e)\r\n            if q is None:\r\n                complete = False\r\n            else:\r\n                flow[eid] = q\r\n    for e in reversed(order):               # children are found after parents\r\n        eid = eid_int(e.Id)\r\n        pid = parent[eid]\r\n        if pid is not None:\r\n            flow[pid] += flow[eid]\r\n            count[pid] += count[eid]\r\n    share = {}\r\n    for eid in count:\r\n        share[eid] = (float(count[eid]) / terminals) if terminals else 1.0\r\n    if terminals == 0:\r\n        complete = False\r\n    return flow, share, terminals, complete\r\n\r\n\r\ndef direct_child_toward(target_id, el_id, parent):\r\n    \"\"\"Id of the neighbour of el that lies on the way to target (via the walk).\"\"\"\r\n    cur = target_id\r\n    guard = 0\r\n    while cur is not None and guard < 10000:\r\n        if parent.get(cur) == el_id:\r\n            return cur\r\n        cur = parent.get(cur)\r\n        guard += 1\r\n    return None\r\n\r\n\r\ndef accessory_name(el):\r\n    fam, typ = type_names(el)\r\n    text = (fam + \" \" + typ).lower()\r\n    for word, name in ACCESSORY_NAMES:\r\n        if word in text:\r\n            return name\r\n    return fam or \"Accessory\"\r\n\r\n\r\ndef describe(el, side, c_in, c_out):\r\n    \"\"\"\r\n    (sheet name, kind, suggested code, size used, length m, note) for a row.\r\n    c_in / c_out = connectors where the air enters / leaves (may be None).\r\n    kind: straight, fitting or fixed.\r\n    \"\"\"\r\n    cat = cat_int(el)\r\n    fam, typ = type_names(el)\r\n    s_in = conn_size(c_in) if c_in is not None else None\r\n    s_out = conn_size(c_out) if c_out is not None else None\r\n    if s_in is None:\r\n        for c in hvac_connectors(el):\r\n            s_in = conn_size(c)\r\n            if s_in is not None:\r\n                break\r\n    size = s_in\r\n    shape = size[0] if size else \"rect\"\r\n    note_parts = []\r\n\r\n    if cat == DUCT_CAT or cat == FLEX_CAT:\r\n        length = duct_length_ft(el)\r\n        name = \"Straight Run\" if cat == DUCT_CAT else \"Flex Duct\"\r\n        return (name, \"straight\", \"\", size,\r\n                (length * FT_TO_MM / 1000.0) if length is not None else None, \"\")\r\n\r\n    if cat == TERMINAL_CAT:\r\n        low = (fam + \" \" + typ).lower()\r\n        if side == \"return\":\r\n            name = \"Extract Grill\"\r\n        elif \"grill\" in low:\r\n            name = \"Supply Grill\"\r\n        else:\r\n            name = \"Supply Diffuser\"\r\n        return (name, \"fixed\", typ, size, None, \"\")\r\n\r\n    if cat == ACCESSORY_CAT:\r\n        length = None\r\n        if c_in is not None and c_out is not None:\r\n            length = connector_distance_m(c_in, c_out)\r\n        return (accessory_name(el), \"fixed\", \"\", size, length, \"\")\r\n\r\n    if cat == EQUIPMENT_CAT:\r\n        outs = [size_text(conn_size(c)) for c in hvac_connectors(el)\r\n                if c is not c_in]\r\n        note = \"in {} -> out {}\".format(size_text(s_in), \", \".join(outs) or \"?\")\r\n        return (\"Plenum\", \"fitting\", ASHRAE_CODES.get((\"plenum\", side), \"\"),\r\n                size, None, note)\r\n\r\n    # duct fitting\r\n    conns = hvac_connectors(el)\r\n    n = len(conns)\r\n    length = None\r\n    if n >= 3:\r\n        name = \"Tee\" if n == 3 else \"Cross\"\r\n        others = [size_text(conn_size(c)) for c in conns\r\n                  if c is not c_in and c is not c_out]\r\n        note_parts.append(\"in {} -> route {}, branch {}\".format(\r\n            size_text(s_in), size_text(s_out), \", \".join(others) or \"?\"))\r\n        code = ASHRAE_CODES.get((\"tee\", side), \"\")\r\n    elif n == 2:\r\n        a, b = conns[0], conns[1]\r\n        if c_in is None or c_out is None:\r\n            c_in, c_out = a, b\r\n            s_out = conn_size(b)\r\n        angle = bend_angle(a, b)\r\n        length = connector_distance_m(a, b)\r\n        if is_tap(el):\r\n            name = \"Tap\"\r\n            code = ASHRAE_CODES.get((\"tap\", side), \"\")\r\n            note_parts.append(\"{} -> {}\".format(size_text(s_in), size_text(s_out)))\r\n        elif angle is not None and angle >= 3.0:\r\n            name = \"Elbow {:.0f}\".format(angle)\r\n            code = ASHRAE_CODES.get((\"elbow\", shape), \"\")\r\n            length = None\r\n            if s_out is not None and s_in is not None and s_out != s_in:\r\n                note_parts.append(\"{} -> {}\".format(size_text(s_in),\r\n                                                    size_text(s_out)))\r\n        elif s_in is not None and s_out is not None and (\r\n                s_in[0] != s_out[0]\r\n                or any(abs(x - y) > 0.5 for x, y in zip(s_in[1:], s_out[1:]))):\r\n            name = \"Transition\"\r\n            code = ASHRAE_CODES.get((\"transition\", side), \"\")\r\n            note_parts.append(\"{} -> {}\".format(size_text(s_in), size_text(s_out)))\r\n        else:\r\n            name = fam or \"Fitting\"\r\n            code = \"\"\r\n            length = None\r\n    else:\r\n        name = fam or \"Fitting\"\r\n        code = \"\"\r\n        note_parts.append(\"{} duct connector(s)\".format(n))\r\n    return (name, \"fitting\", code, size, length, \"; \".join(note_parts))\r\n\r\n\r\ndef plane_width(c, other):\r\n    \"\"\"\r\n    Width of a rectangular connector measured in the plane of the bend\r\n    (the plane that also holds the other connector's direction), in mm.\r\n    Falls back to the smaller side. Round: the diameter.\r\n    \"\"\"\r\n    size = conn_size(c)\r\n    if size is None:\r\n        return None\r\n    if size[0] == \"round\":\r\n        return size[1]\r\n    try:\r\n        z = other.CoordinateSystem.BasisZ\r\n        cs = c.CoordinateSystem\r\n        along_w = abs(cs.BasisX.DotProduct(z))\r\n        along_h = abs(cs.BasisY.DotProduct(z))\r\n        if abs(along_w - along_h) > 0.2:\r\n            return size[1] if along_w > along_h else size[2]\r\n    except Exception:\r\n        pass\r\n    return min(size[1], size[2])\r\n\r\n\r\ndef room_of(el):\r\n    \"\"\"(name, volume m3) of the Space or Room an air terminal serves, or ('', None).\"\"\"\r\n    for attr in (\"Space\", \"Room\"):\r\n        try:\r\n            r = getattr(el, attr)\r\n            if r is None:\r\n                continue\r\n            vol = None\r\n            try:\r\n                v = r.Volume\r\n                if v and v > 0:\r\n                    vol = v * 0.028316846592        # ft3 -> m3\r\n            except Exception:\r\n                pass\r\n            return get_name(r), vol\r\n        except Exception:\r\n            pass\r\n    return \"\", None\r\n\r\n\r\ndef noise_inputs(side, order, depth, parent, skipped, flow, share, complete):\r\n    \"\"\"\r\n    Inputs of the noise calculation for one side, along the route from the FCU\r\n    to the NEAREST air terminal (least attenuation = the critical outlet).\r\n    \"\"\"\r\n    by_id = {}\r\n    for e in order:\r\n        by_id[eid_int(e.Id)] = e\r\n    terms = [e for e in order if cat_int(e) == TERMINAL_CAT]\r\n    if not terms:\r\n        return None\r\n    outlet = min(terms, key=lambda e: (depth[eid_int(e.Id)], eid_int(e.Id)))\r\n    chain = []\r\n    cur = eid_int(outlet.Id)\r\n    while cur is not None:\r\n        chain.append(by_id[cur])\r\n        cur = parent[cur]\r\n\r\n    smallest, duct_len, flex_len = None, 0.0, 0.0\r\n    short, longr, other_elbows, accessories = {}, {}, 0, []\r\n    for e in chain:\r\n        cat = cat_int(e)\r\n        if cat == DUCT_CAT or cat == FLEX_CAT:\r\n            L = duct_length_ft(e)\r\n            L = (L * FT_TO_MM / 1000.0) if L is not None else 0.0\r\n            if cat == FLEX_CAT:\r\n                flex_len += L\r\n                continue\r\n            duct_len += L\r\n            for c in hvac_connectors(e):\r\n                size = conn_size(c)\r\n                if size is not None:\r\n                    m = min(size[1:])\r\n                    if smallest is None or m < smallest:\r\n                        smallest = m\r\n                    break\r\n        elif cat == ACCESSORY_CAT:\r\n            accessories.append(accessory_name(e))\r\n        elif cat == FITTING_CAT:\r\n            conns = hvac_connectors(e)\r\n            if len(conns) != 2 or is_tap(e):\r\n                continue\r\n            angle = bend_angle(conns[0], conns[1])\r\n            if angle is None or angle < 60.0:\r\n                if angle is not None and angle >= 3.0:\r\n                    other_elbows += 1\r\n                continue\r\n            w = plane_width(conns[0], conns[1])\r\n            if w is None:\r\n                continue\r\n            w = int(round(w))\r\n            radius = None\r\n            d = connector_distance_m(conns[0], conns[1])\r\n            try:\r\n                radius = d * 1000.0 / (2.0 * math.sin(math.radians(angle) / 2.0))\r\n            except Exception:\r\n                pass\r\n            # centreline radius / width: below 1.25 = short radius\r\n            if radius is not None and radius / w >= 1.25:\r\n                longr[w] = longr.get(w, 0) + 1\r\n            else:\r\n                short[w] = short.get(w, 0) + 1\r\n\r\n    oid = eid_int(outlet.Id)\r\n    area = None\r\n    for c in hvac_connectors(outlet):\r\n        size = conn_size(c)\r\n        if size is not None:\r\n            if size[0] == \"rect\":\r\n                area = size[1] * size[2] / 100.0            # mm2 -> cm2\r\n            else:\r\n                area = math.pi * size[1] ** 2 / 400.0\r\n            break\r\n    fam, typ = type_names(outlet)\r\n    room_name, room_vol = room_of(outlet)\r\n    notes = []\r\n    if flex_len > 0:\r\n        notes.append(\"flex duct on the route: {:.2f} m (not in the length)\"\r\n                     .format(flex_len))\r\n    if accessories:\r\n        notes.append(\"on the route: \" + \", \".join(accessories))\r\n    if other_elbows:\r\n        notes.append(\"{} bend(s) under 60 deg not counted\".format(other_elbows))\r\n    for label, group in ((\"short\", short), (\"long\", longr)):\r\n        if len(group) > 3:\r\n            notes.append(\"more than 3 {} radius elbow widths: {}\".format(\r\n                label, \", \".join(\"{}x{}\".format(q, w)\r\n                                 for w, q in sorted(group.items()))))\r\n    return {\r\n        \"side\": side.upper(), \"smallest\": smallest, \"length\": duct_len,\r\n        \"short\": sorted(short.items())[:3], \"long\": sorted(longr.items())[:3],\r\n        \"area\": area, \"flow\": flow[oid] if complete else None,\r\n        \"share\": share[oid], \"room\": room_name, \"volume\": room_vol,\r\n        \"outlet\": \"{} (id {})\".format(typ or fam, oid), \"notes\": \"; \".join(notes),\r\n        \"terminals\": len(terms),\r\n    }\r\n\r\n\r\ndef plan_fcu(fcu, label):\r\n    \"\"\"\r\n    Read-only: build the rows for one FCU.\r\n    Returns (report_lines, sheet) where sheet is None on failure, else a dict\r\n    with 'label', 'rows', 'fcu_flow', 'need_flow'.\r\n    \"\"\"\r\n    ret_c, sup_c, note = find_fcu_connectors(fcu)\r\n    if not ret_c or not sup_c:\r\n        return ([\"FAIL | {} | needs a Return Air and a Supply Air duct connector | {}\"\r\n                 .format(label, note)], None)\r\n\r\n    fid = eid_int(fcu.Id)\r\n    ret_roots, sup_roots = [], []\r\n    for c in ret_c:\r\n        ret_roots.extend(neighbors_of_connector(c, fid, THROUGH_NAMES))\r\n    for c in sup_c:\r\n        sup_roots.extend(neighbors_of_connector(c, fid, THROUGH_NAMES))\r\n    if not ret_roots or not sup_roots:\r\n        side = \"Return Air\" if not ret_roots else \"Supply Air\"\r\n        return ([\"FAIL | {} | the {} connector is not connected to any duct, fitting, \"\r\n                 \"accessory, air terminal or plenum\".format(label, side)], None)\r\n\r\n    r_order, r_depth, r_parent, r_skip, r_trunc, _ = walk_side(\r\n        ret_roots, set(), max_hops, min_len_ft, THROUGH_NAMES)\r\n    s_order, s_depth, s_parent, s_skip, s_trunc, _ = walk_side(\r\n        sup_roots, set(r_depth.keys()), max_hops, min_len_ft, THROUGH_NAMES)\r\n\r\n    r_route = longest_route(r_order, r_depth, r_parent, r_skip)   # FCU -> far end\r\n    s_route = longest_route(s_order, s_depth, s_parent, s_skip)   # FCU -> far end\r\n    R = len(r_route)\r\n\r\n    r_flow, r_share, r_terms, r_complete = side_flows(r_order, r_parent)\r\n    s_flow, s_share, s_terms, s_complete = side_flows(s_order, s_parent)\r\n\r\n    fcu_flow = read_fcu_flow(fcu)\r\n    if fcu_flow is None and s_complete:\r\n        fcu_flow = sum(s_flow[eid_int(e.Id)] for e in s_order\r\n                       if s_parent[eid_int(e.Id)] is None)\r\n    if fcu_flow is None and r_complete:\r\n        fcu_flow = sum(r_flow[eid_int(e.Id)] for e in r_order\r\n                       if r_parent[eid_int(e.Id)] is None)\r\n\r\n    rows = []\r\n    mismatches = 0\r\n    plan = ((\"return\", list(reversed(r_route)), r_route, r_parent, r_depth,\r\n             r_flow, r_share, r_complete),\r\n            (\"supply\", s_route, s_route, s_parent, s_depth,\r\n             s_flow, s_share, s_complete))\r\n    for side, ordered, route, parent, depth, flow, share, complete in plan:\r\n        pos = {}\r\n        for i, e in enumerate(route):               # route is FCU -> far end\r\n            pos[eid_int(e.Id)] = i\r\n        for e in ordered:\r\n            eid = eid_int(e.Id)\r\n            i = pos[eid]\r\n            # connector on the FCU side, and the one toward the far end\r\n            pid = parent[eid]\r\n            c_near = connector_to(e, pid if pid is not None else fid)\r\n            c_far = None\r\n            if i + 1 < len(route):\r\n                child = direct_child_toward(eid_int(route[i + 1].Id), eid, parent)\r\n                if child is not None:\r\n                    c_far = connector_to(e, child)\r\n            if c_far is None:\r\n                rest = [c for c in hvac_connectors(e) if c is not c_near]\r\n                if len(rest) == 1:\r\n                    c_far = rest[0]\r\n            if side == \"supply\":\r\n                c_in, c_out = c_near, c_far\r\n                number = R + depth[eid]\r\n            else:\r\n                c_in, c_out = c_far, c_near\r\n                number = R - depth[eid] + 1\r\n\r\n            name, kind, code, size, length, note = describe(e, side, c_in, c_out)\r\n            fam, typ = type_names(e)\r\n            stored = read_number(e)\r\n            if stored is not None and stored != number:\r\n                mismatches += 1\r\n            rows.append({\r\n                \"number\": number, \"name\": name, \"kind\": kind, \"code\": code,\r\n                \"size\": size, \"length\": length, \"note\": note,\r\n                \"flow\": flow[eid] if complete else None,\r\n                \"share\": share[eid], \"id\": eid,\r\n                \"type\": (fam + \" : \" + typ) if fam else typ,\r\n                \"fixed\": FIXED_LOSS.get(name),\r\n            })\r\n\r\n    need_flow = (not r_complete) or (not s_complete)\r\n    noise = []\r\n    for args in ((\"return\", r_order, r_depth, r_parent, r_skip, r_flow, r_share,\r\n                  r_complete),\r\n                 (\"supply\", s_order, s_depth, s_parent, s_skip, s_flow, s_share,\r\n                  s_complete)):\r\n        try:\r\n            n = noise_inputs(*args)\r\n        except Exception:\r\n            n = None\r\n        if n is not None:\r\n            noise.append(n)\r\n    lines = [\"PLAN | {} | {} rows (return {} + supply {}) | air terminals: return {}, \"\r\n             \"supply {} | flows from {}\".format(\r\n                 label, len(rows), len(r_route), len(s_route), r_terms, s_terms,\r\n                 \"the Revit air terminals\" if not need_flow else\r\n                 \"the FCU flow shared equally between terminals\"\r\n                 + (\"\" if fcu_flow is not None else \" (type the FCU flow in the \"\r\n                    \"yellow cell)\"))]\r\n    if note:\r\n        lines.append(\"NOTE | {} | {}\".format(label, note))\r\n    if r_trunc or s_trunc:\r\n        lines.append(\"WARNING | {} | hop limit reached, network may be incomplete\"\r\n                     .format(label))\r\n    if mismatches:\r\n        lines.append(\"WARNING | {} | {} element(s) carry a different number in '{}' \"\r\n                     \"than this route gives: run the numbering script again\"\r\n                     .format(label, mismatches, NUM_PARAM))\r\n    if not r_route or not s_route:\r\n        lines.append(\"WARNING | {} | the {} side has no countable element\".format(\r\n            label, \"return\" if not r_route else \"supply\"))\r\n    for r in rows:\r\n        lines.append(\"  {} | {:>3} | {} | {} | {} | L {} | {}\".format(\r\n            label, r[\"number\"], r[\"name\"], r[\"code\"] or \"-\", size_text(r[\"size\"]),\r\n            \"-\" if r[\"length\"] is None else \"{:.3f} m\".format(r[\"length\"]),\r\n            (\"{:.1f} L/s\".format(r[\"flow\"]) if r[\"flow\"] is not None\r\n             else \"{:.0f}% of FCU flow\".format(100 * r[\"share\"]))))\r\n    for n in noise:\r\n        lines.append(\"  {} | NOISE {} | smallest duct {} mm, length {:.2f} m | \"\r\n                     \"elbows short {} long {} | outlet {} cm2\".format(\r\n                         label, n[\"side\"],\r\n                         \"?\" if n[\"smallest\"] is None else int(round(n[\"smallest\"])),\r\n                         n[\"length\"],\r\n                         \", \".join(\"{}x{}\".format(q, w) for w, q in n[\"short\"])\r\n                         or \"0\",\r\n                         \", \".join(\"{}x{}\".format(q, w) for w, q in n[\"long\"])\r\n                         or \"0\",\r\n                         \"?\" if n[\"area\"] is None else int(round(n[\"area\"]))))\r\n    return lines, {\"label\": label, \"rows\": rows, \"fcu_flow\": fcu_flow,\r\n                   \"need_flow\": need_flow, \"noise\": noise}\r\n\r\n\r\n# ------------------------------------------------------------------\r\n# Excel writer (standard library only, no extra packages needed)\r\n# ------------------------------------------------------------------\r\nS_NORMAL, S_BOLD, S_YELLOW, S_HEAD, S_NUM2, S_TITLE, S_BOLDNUM, S_INT, S_NUM3 = \\\r\n    0, 1, 2, 3, 4, 5, 6, 7, 8\r\n\r\nHEADERS = [\"Element number on figure\", \"Duct Element\", \"ASHRAE Fitting number\",\r\n           \"Flow rate /L.s-1\", \"Width /mm\", \"Depth /mm\", \"Length /m\",\r\n           \"Fitting loss coefficient\", \"EQ DIA /mm\", \"Velocity /m.s-1\",\r\n           \"Reynold Number\", \"f' factor\", \"Friction factor F\",\r\n           \"Velocity Pressure /Pa\", \"Friction /Pa.m-1\", \"Velocity /fpm\",\r\n           \"Total Pressure Loss /Pa\", \"\", \"Revit id\", \"Family : Type\", \"Notes\"]\r\nCOL_WIDTHS = [10, 20, 14, 10, 9, 9, 9, 11, 10, 10, 11, 9, 9, 10, 10, 10, 12, 3,\r\n              11, 42, 40]\r\nFIRST_ROW = 6\r\nFLOW_CELL = \"$D$3\"\r\n\r\n\r\ndef xml_escape(text):\r\n    return (str(text).replace(\"&\", \"&amp;\").replace(\"<\", \"&lt;\")\r\n            .replace(\">\", \"&gt;\").replace('\"', \"&quot;\"))\r\n\r\n\r\ndef col_letter(index):\r\n    \"\"\"0 -> A, 25 -> Z, 26 -> AA.\"\"\"\r\n    s = \"\"\r\n    index += 1\r\n    while index:\r\n        index, rem = divmod(index - 1, 26)\r\n        s = chr(65 + rem) + s\r\n    return s\r\n\r\n\r\ndef cell_xml(ref, value, style=S_NORMAL):\r\n    \"\"\"value: None, number, text, or ('f', formula).\"\"\"\r\n    if value is None:\r\n        return '<c r=\"{}\" s=\"{}\"/>'.format(ref, style)\r\n    if isinstance(value, tuple):\r\n        return '<c r=\"{}\" s=\"{}\"><f>{}</f></c>'.format(ref, style,\r\n                                                      xml_escape(value[1]))\r\n    if isinstance(value, (int, float)):\r\n        return '<c r=\"{}\" s=\"{}\"><v>{}</v></c>'.format(ref, style, repr(value))\r\n    return ('<c r=\"{}\" s=\"{}\" t=\"inlineStr\"><is><t xml:space=\"preserve\">{}</t></is>'\r\n            '</c>'.format(ref, style, xml_escape(value)))\r\n\r\n\r\ndef sheet_xml(cells, widths, freeze_row=None):\r\n    \"\"\"cells: {(row, col): (value, style)} with 1-based row, 0-based col.\"\"\"\r\n    out = ['<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>',\r\n           '<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/'\r\n           '2006/main\">']\r\n    if freeze_row:\r\n        out.append('<sheetViews><sheetView workbookViewId=\"0\"><pane ySplit=\"{0}\" '\r\n                   'topLeftCell=\"A{1}\" activePane=\"bottomLeft\" state=\"frozen\"/>'\r\n                   '</sheetView></sheetViews>'.format(freeze_row, freeze_row + 1))\r\n    out.append(\"<cols>\")\r\n    for i, w in enumerate(widths):\r\n        out.append('<col min=\"{0}\" max=\"{0}\" width=\"{1}\" customWidth=\"1\"/>'\r\n                   .format(i + 1, w))\r\n    out.append(\"</cols><sheetData>\")\r\n    rows = {}\r\n    for (r, c), v in cells.items():\r\n        rows.setdefault(r, {})[c] = v\r\n    for r in sorted(rows):\r\n        out.append('<row r=\"{}\">'.format(r))\r\n        for c in sorted(rows[r]):\r\n            value, style = rows[r][c]\r\n            out.append(cell_xml(\"{}{}\".format(col_letter(c), r), value, style))\r\n        out.append(\"</row>\")\r\n    out.append(\"</sheetData></worksheet>\")\r\n    return \"\".join(out)\r\n\r\n\r\nSTYLES_XML = (\r\n    '<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>'\r\n    '<styleSheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\">'\r\n    '<numFmts count=\"2\"><numFmt numFmtId=\"164\" formatCode=\"0.00\"/>'\r\n    '<numFmt numFmtId=\"165\" formatCode=\"0.000\"/></numFmts>'\r\n    '<fonts count=\"3\"><font><sz val=\"11\"/><name val=\"Calibri\"/></font>'\r\n    '<font><b/><sz val=\"11\"/><name val=\"Calibri\"/></font>'\r\n    '<font><b/><sz val=\"14\"/><name val=\"Calibri\"/></font></fonts>'\r\n    '<fills count=\"4\"><fill><patternFill patternType=\"none\"/></fill>'\r\n    '<fill><patternFill patternType=\"gray125\"/></fill>'\r\n    '<fill><patternFill patternType=\"solid\"><fgColor rgb=\"FFFFFF00\"/>'\r\n    '<bgColor indexed=\"64\"/></patternFill></fill>'\r\n    '<fill><patternFill patternType=\"solid\"><fgColor rgb=\"FFD9D9D9\"/>'\r\n    '<bgColor indexed=\"64\"/></patternFill></fill></fills>'\r\n    '<borders count=\"2\"><border><left/><right/><top/><bottom/><diagonal/></border>'\r\n    '<border><left style=\"thin\"/><right style=\"thin\"/><top style=\"thin\"/>'\r\n    '<bottom style=\"thin\"/><diagonal/></border></borders>'\r\n    '<cellStyleXfs count=\"1\"><xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\"/>'\r\n    '</cellStyleXfs>'\r\n    '<cellXfs count=\"9\">'\r\n    '<xf numFmtId=\"0\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\"/>'\r\n    '<xf numFmtId=\"0\" fontId=\"1\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"1\"/>'\r\n    '<xf numFmtId=\"164\" fontId=\"0\" fillId=\"2\" borderId=\"1\" xfId=\"0\" applyFill=\"1\" '\r\n    'applyBorder=\"1\" applyNumberFormat=\"1\"/>'\r\n    '<xf numFmtId=\"0\" fontId=\"1\" fillId=\"3\" borderId=\"1\" xfId=\"0\" applyFont=\"1\" '\r\n    'applyFill=\"1\" applyBorder=\"1\" applyAlignment=\"1\"><alignment wrapText=\"1\" '\r\n    'horizontal=\"center\" vertical=\"center\"/></xf>'\r\n    '<xf numFmtId=\"164\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" '\r\n    'applyNumberFormat=\"1\"/>'\r\n    '<xf numFmtId=\"0\" fontId=\"2\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"1\"/>'\r\n    '<xf numFmtId=\"164\" fontId=\"1\" fillId=\"0\" borderId=\"0\" xfId=\"0\" applyFont=\"1\" '\r\n    'applyNumberFormat=\"1\"/>'\r\n    '<xf numFmtId=\"1\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" '\r\n    'applyNumberFormat=\"1\"/>'\r\n    '<xf numFmtId=\"165\" fontId=\"0\" fillId=\"0\" borderId=\"0\" xfId=\"0\" '\r\n    'applyNumberFormat=\"1\"/>'\r\n    '</cellXfs></styleSheet>')\r\n\r\n\r\ndef fcu_sheet_cells(sheet):\r\n    \"\"\"Cells of one FCU sheet. Returns (cells, total row, safety total row).\"\"\"\r\n    cells = {}\r\n    cells[(1, 0)] = (\"PRESSURE DROP CALCULATION\", S_TITLE)\r\n    cells[(2, 0)] = (sheet[\"label\"], S_TITLE)\r\n    cells[(3, 0)] = (\"FCU flow /L.s-1\", S_BOLD)\r\n    if sheet[\"fcu_flow\"] is not None:\r\n        cells[(3, 3)] = (round(sheet[\"fcu_flow\"], 1), S_NUM2)\r\n    else:\r\n        cells[(3, 3)] = (None, S_YELLOW)\r\n    cells[(3, 5)] = (\"Yellow cells: fill in by hand (loss coefficient from the \"\r\n                     \"ASHRAE Duct Fitting Database, fixed losses from the \"\r\n                     \"manufacturer).\", S_NORMAL)\r\n    cells[(4, 0)] = (\"INPUT\", S_BOLD)\r\n    cells[(4, 8)] = (\"OUTPUT\", S_BOLD)\r\n    for c, h in enumerate(HEADERS):\r\n        if h:\r\n            cells[(5, c)] = (h, S_HEAD)\r\n\r\n    r = FIRST_ROW\r\n    for row in sheet[\"rows\"]:\r\n        n = str(r)\r\n        cells[(r, 0)] = (row[\"number\"], S_INT)\r\n        cells[(r, 1)] = (row[\"name\"], S_NORMAL)\r\n        if row[\"code\"]:\r\n            cells[(r, 2)] = (row[\"code\"], S_NORMAL)\r\n        if row[\"flow\"] is not None:\r\n            cells[(r, 3)] = (round(row[\"flow\"], 2), S_NUM2)\r\n        else:\r\n            cells[(r, 3)] = ((\"f\", \"{}*{}\".format(FLOW_CELL,\r\n                                                  round(row[\"share\"], 6))), S_NUM2)\r\n        size = row[\"size\"]\r\n        if size is not None and size[0] == \"rect\":\r\n            cells[(r, 4)] = (round(size[1]), S_INT)\r\n            cells[(r, 5)] = (round(size[2]), S_INT)\r\n            cells[(r, 8)] = ((\"f\", \"1.3*(E{0}*F{0})^0.625/(E{0}+F{0})^0.25\"\r\n                              .format(n)), S_NUM2)\r\n        elif size is not None:\r\n            cells[(r, 8)] = (round(size[1]), S_NUM2)\r\n        else:\r\n            cells[(r, 8)] = (None, S_YELLOW)\r\n        if row[\"length\"] is not None:\r\n            cells[(r, 6)] = (round(row[\"length\"], 3), S_NUM3)\r\n        if row[\"kind\"] == \"fitting\":\r\n            cells[(r, 7)] = (None, S_YELLOW)\r\n        cells[(r, 9)] = ((\"f\", \"(D{0}/1000)/((3.14/4)*((I{0}/1000)^2))\".format(n)),\r\n                         S_NUM2)\r\n        cells[(r, 10)] = ((\"f\", \"66.4*J{0}*(I{0})\".format(n)), S_INT)\r\n        cells[(r, 11)] = ((\"f\", \"0.11*(((0.09/I{0})+(68/K{0}))^0.25)\".format(n)),\r\n                          S_NUM3)\r\n        cells[(r, 12)] = ((\"f\", \"(0.85*L{0})+0.0028\".format(n)), S_NUM3)\r\n        cells[(r, 13)] = ((\"f\", \"J{0}^2*1.21/2\".format(n)), S_NUM2)\r\n        cells[(r, 14)] = ((\"f\", \"((J{0}^2)/2)*1.2*M{0}*(1000/I{0})\".format(n)),\r\n                          S_NUM3)\r\n        cells[(r, 15)] = ((\"f\", \"J{0}*196.85\".format(n)), S_NUM2)\r\n        if row[\"kind\"] == \"straight\":\r\n            cells[(r, 16)] = ((\"f\", \"O{0}*G{0}\".format(n)), S_NUM2)\r\n        elif row[\"kind\"] == \"fitting\":\r\n            cells[(r, 16)] = ((\"f\", \"(H{0}*POWER(P{0}/4005,2))*254\".format(n)),\r\n                              S_NUM2)\r\n        elif row[\"fixed\"] is not None:\r\n            cells[(r, 16)] = (row[\"fixed\"], S_NUM2)\r\n        else:\r\n            cells[(r, 16)] = (None, S_YELLOW)\r\n        cells[(r, 18)] = (row[\"id\"], S_INT)\r\n        cells[(r, 19)] = (row[\"type\"], S_NORMAL)\r\n        if row[\"note\"]:\r\n            cells[(r, 20)] = (row[\"note\"], S_NORMAL)\r\n        r += 1\r\n\r\n    last = r - 1\r\n    cells[(r, 7)] = (\"TOTAL Pressure Drop (Pa)\", S_BOLD)\r\n    cells[(r, 16)] = ((\"f\", \"SUM(Q{}:Q{})\".format(FIRST_ROW, max(last, FIRST_ROW))),\r\n                      S_BOLDNUM)\r\n    cells[(r + 1, 7)] = (\"+% Safety\", S_BOLD)\r\n    cells[(r + 1, 16)] = (SAFETY, S_NUM2)\r\n    cells[(r + 2, 7)] = (\"TOTAL (Pa)\", S_BOLD)\r\n    cells[(r + 2, 16)] = ((\"f\", \"Q{}*(1+Q{}/100)\".format(r, r + 1)), S_BOLDNUM)\r\n    return cells, r, r + 2\r\n\r\n\r\nNOISE_HEADERS = [\r\n    (\"FCU\", \"\"), (\"Side\", \"A1\"), (\"Total flow /L.s-1\", \"F8\"),\r\n    (\"Smallest duct dimension /mm\", \"C13\"), (\"Duct length /m\", \"F13\"),\r\n    (\"Short radius elbow 1 width /mm\", \"C15\"), (\"Qty\", \"F15\"),\r\n    (\"Short radius elbow 2 width /mm\", \"C16\"), (\"Qty\", \"F16\"),\r\n    (\"Short radius elbow 3 width /mm\", \"C17\"), (\"Qty\", \"F17\"),\r\n    (\"Long radius elbow 1 width /mm\", \"C19\"), (\"Qty\", \"F19\"),\r\n    (\"Long radius elbow 2 width /mm\", \"C20\"), (\"Qty\", \"F20\"),\r\n    (\"Long radius elbow 3 width /mm\", \"C21\"), (\"Qty\", \"F21\"),\r\n    (\"Critical outlet area /cm2\", \"C23\"), (\"Outlet flow /L.s-1\", \"F23\"),\r\n    (\"Percentage leaving outlet\", \"C27\"), (\"Room volume /m3\", \"C34\"),\r\n    (\"Room\", \"\"), (\"Critical outlet\", \"\"), (\"Air terminals on this side\", \"\"),\r\n    (\"Notes\", \"\"),\r\n]\r\nNOISE_WIDTHS = [22, 9, 10, 11, 9, 11, 5, 11, 5, 11, 5, 11, 5, 11, 5, 11, 5, 11, 10,\r\n                11, 10, 24, 30, 10, 60]\r\n\r\n\r\ndef noise_sheet_cells(sheets, names):\r\n    \"\"\"One row per FCU side with the inputs of the noise calculation sheet.\"\"\"\r\n    cells = {\r\n        (1, 0): (\"NOISE CALCULATION INPUTS\", S_TITLE),\r\n        (2, 0): (\"Route from the FCU to the nearest air terminal of each side. \"\r\n                 \"Row 4 gives the cell of the noise calculation sheet each value \"\r\n                 \"goes into. Source sound power, distance to listener, \"\r\n                 \"directivity, reverberation time and NC are not in the model.\",\r\n                 S_NORMAL),\r\n    }\r\n    for c, (text, ref) in enumerate(NOISE_HEADERS):\r\n        cells[(3, c)] = (text, S_HEAD)\r\n        if ref:\r\n            cells[(4, c)] = (ref, S_BOLD)\r\n    r = 5\r\n    for sheet, name in zip(sheets, names):\r\n        flow_ref = \"'\" + name.replace(\"'\", \"''\") + \"'!D3\"\r\n        for n in sheet.get(\"noise\", []):\r\n            cells[(r, 0)] = (sheet[\"label\"], S_NORMAL)\r\n            cells[(r, 1)] = (n[\"side\"], S_NORMAL)\r\n            cells[(r, 2)] = ((\"f\", flow_ref), S_NUM2)\r\n            if n[\"smallest\"] is not None:\r\n                cells[(r, 3)] = (int(round(n[\"smallest\"])), S_INT)\r\n            cells[(r, 4)] = (round(n[\"length\"], 2), S_NUM2)\r\n            for base, group in ((5, n[\"short\"]), (11, n[\"long\"])):\r\n                for k, (w, q) in enumerate(group):\r\n                    cells[(r, base + 2 * k)] = (w, S_INT)\r\n                    cells[(r, base + 2 * k + 1)] = (q, S_INT)\r\n            if n[\"area\"] is not None:\r\n                cells[(r, 17)] = (round(n[\"area\"], 1), S_NUM2)\r\n            if n[\"flow\"] is not None:\r\n                cells[(r, 18)] = (round(n[\"flow\"], 2), S_NUM2)\r\n            else:\r\n                cells[(r, 18)] = ((\"f\", \"{}*{}\".format(flow_ref,\r\n                                                       round(n[\"share\"], 6))), S_NUM2)\r\n            cells[(r, 19)] = ((\"f\", \"IF(C{0}=0,0,S{0}/C{0})\".format(r)), S_NUM2)\r\n            if n[\"volume\"] is not None:\r\n                cells[(r, 20)] = (round(n[\"volume\"], 1), S_NUM2)\r\n            if n[\"room\"]:\r\n                cells[(r, 21)] = (n[\"room\"], S_NORMAL)\r\n            cells[(r, 22)] = (n[\"outlet\"], S_NORMAL)\r\n            cells[(r, 23)] = (n[\"terminals\"], S_INT)\r\n            if n[\"notes\"]:\r\n                cells[(r, 24)] = (n[\"notes\"], S_NORMAL)\r\n            r += 1\r\n    return cells\r\n\r\n\r\ndef safe_sheet_names(labels):\r\n    \"\"\"Excel sheet names: max 31 characters, no []:*?/\\\\ and unique.\"\"\"\r\n    names, used = [], set()\r\n    for label in labels:\r\n        base = \"\".join(\"-\" if ch in '[]:*?/\\\\' else ch for ch in label)[:31] or \"FCU\"\r\n        name, k = base, 2\r\n        while name.lower() in used:\r\n            suffix = \"_{}\".format(k)\r\n            name = base[:31 - len(suffix)] + suffix\r\n            k += 1\r\n        used.add(name.lower())\r\n        names.append(name)\r\n    return names\r\n\r\n\r\ndef write_workbook(path, sheets):\r\n    \"\"\"Write one workbook: a Summary sheet, then one sheet per FCU.\"\"\"\r\n    names = safe_sheet_names([\"Summary\", \"Noise inputs\"]\r\n                             + [s[\"label\"] for s in sheets])[2:]\r\n    parts = []\r\n    summary = {\r\n        (1, 0): (\"FCU PRESSURE DROP SUMMARY\", S_TITLE),\r\n        (3, 0): (\"FCU\", S_HEAD), (3, 1): (\"Flow /L.s-1\", S_HEAD),\r\n        (3, 2): (\"Elements\", S_HEAD), (3, 3): (\"Total /Pa\", S_HEAD),\r\n        (3, 4): (\"Total + safety /Pa\", S_HEAD),\r\n    }\r\n    for i, (sheet, name) in enumerate(zip(sheets, names)):\r\n        cells, total_row, safe_row = fcu_sheet_cells(sheet)\r\n        parts.append(sheet_xml(cells, COL_WIDTHS, freeze_row=5))\r\n        quoted = \"'\" + name.replace(\"'\", \"''\") + \"'\"\r\n        r = 4 + i\r\n        summary[(r, 0)] = (sheet[\"label\"], S_NORMAL)\r\n        summary[(r, 1)] = ((\"f\", \"{}!D3\".format(quoted)), S_NUM2)\r\n        summary[(r, 2)] = (len(sheet[\"rows\"]), S_INT)\r\n        summary[(r, 3)] = ((\"f\", \"{}!Q{}\".format(quoted, total_row)), S_NUM2)\r\n        summary[(r, 4)] = ((\"f\", \"{}!Q{}\".format(quoted, safe_row)), S_NUM2)\r\n    all_names = [\"Summary\", \"Noise inputs\"] + names\r\n    all_parts = [sheet_xml(summary, [34, 12, 10, 12, 18]),\r\n                 sheet_xml(noise_sheet_cells(sheets, names), NOISE_WIDTHS,\r\n                           freeze_row=4)] + parts\r\n\r\n    ns = \"http://schemas.openxmlformats.org/\"\r\n    content_types = [\r\n        '<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>',\r\n        '<Types xmlns=\"{}package/2006/content-types\">'.format(ns),\r\n        '<Default Extension=\"rels\" ContentType=\"application/vnd.openxmlformats-'\r\n        'package.relationships+xml\"/>',\r\n        '<Default Extension=\"xml\" ContentType=\"application/xml\"/>',\r\n        '<Override PartName=\"/xl/workbook.xml\" ContentType=\"application/vnd.'\r\n        'openxmlformats-officedocument.spreadsheetml.sheet.main+xml\"/>',\r\n        '<Override PartName=\"/xl/styles.xml\" ContentType=\"application/vnd.'\r\n        'openxmlformats-officedocument.spreadsheetml.styles+xml\"/>']\r\n    wb = ['<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>',\r\n          '<workbook xmlns=\"{0}spreadsheetml/2006/main\" xmlns:r=\"{0}officeDocument/'\r\n          '2006/relationships\"><sheets>'.format(ns)]\r\n    rels = ['<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>',\r\n            '<Relationships xmlns=\"{}package/2006/relationships\">'.format(ns)]\r\n    for i, name in enumerate(all_names):\r\n        k = i + 1\r\n        content_types.append(\r\n            '<Override PartName=\"/xl/worksheets/sheet{}.xml\" ContentType='\r\n            '\"application/vnd.openxmlformats-officedocument.spreadsheetml.'\r\n            'worksheet+xml\"/>'.format(k))\r\n        wb.append('<sheet name=\"{}\" sheetId=\"{}\" r:id=\"rId{}\"/>'.format(\r\n            xml_escape(name), k, k))\r\n        rels.append('<Relationship Id=\"rId{0}\" Type=\"{1}officeDocument/2006/'\r\n                    'relationships/worksheet\" Target=\"worksheets/sheet{0}.xml\"/>'\r\n                    .format(k, ns))\r\n    content_types.append(\"</Types>\")\r\n    wb.append('</sheets><calcPr calcId=\"0\" fullCalcOnLoad=\"1\"/></workbook>')\r\n    rels.append('<Relationship Id=\"rId{}\" Type=\"{}officeDocument/2006/relationships/'\r\n                'styles\" Target=\"styles.xml\"/></Relationships>'.format(\r\n                    len(all_names) + 1, ns))\r\n    root_rels = ('<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>'\r\n                 '<Relationships xmlns=\"{0}package/2006/relationships\">'\r\n                 '<Relationship Id=\"rId1\" Type=\"{0}officeDocument/2006/relationships/'\r\n                 'officeDocument\" Target=\"xl/workbook.xml\"/></Relationships>'\r\n                 .format(ns))\r\n\r\n    try:\r\n        zf = zipfile.ZipFile(path, \"w\", zipfile.ZIP_DEFLATED)\r\n    except Exception:\r\n        zf = zipfile.ZipFile(path, \"w\", zipfile.ZIP_STORED)\r\n    try:\r\n        zf.writestr(\"[Content_Types].xml\", \"\".join(content_types))\r\n        zf.writestr(\"_rels/.rels\", root_rels)\r\n        zf.writestr(\"xl/workbook.xml\", \"\".join(wb))\r\n        zf.writestr(\"xl/_rels/workbook.xml.rels\", \"\".join(rels))\r\n        zf.writestr(\"xl/styles.xml\", STYLES_XML)\r\n        for i, part in enumerate(all_parts):\r\n            zf.writestr(\"xl/worksheets/sheet{}.xml\".format(i + 1), part)\r\n    finally:\r\n        zf.close()\r\n\r\n\r\ndef output_path():\r\n    folder = OUT_FOLDER or os.path.join(os.path.expanduser(\"~\"), \"Documents\",\r\n                                        \"FCU pressure loss\")\r\n    if not os.path.isdir(folder):\r\n        os.makedirs(folder)\r\n    tag = \"\".join(ch if (ch.isalnum() or ch in \"-_\") else \"_\" for ch in filter_text)\r\n    name = \"FCU_pressure_loss_{}_{}.xlsx\".format(\r\n        tag.upper(), time.strftime(\"%Y%m%d_%H%M%S\"))\r\n    return os.path.join(folder, name)\r\n\r\n\r\n# ------------------------------------------------------------------\r\n# Main\r\n# ------------------------------------------------------------------\r\ndef main():\r\n    errs = option_errors()\r\n    if errs:\r\n        return [\"INPUT ERROR | \" + e for e in errs]\r\n\r\n    if not filter_text:\r\n        return [\"Filter text is empty - refusing to run on all equipment.\"]\r\n\r\n    fcus = find_targets()\r\n    if not fcus:\r\n        return [\"No equipment with '{}' containing '{}'.\"\r\n                .format(FILTER_PARAM, filter_text)]\r\n\r\n    report = [\"Settings ({}): ducts <= {:.0f} mm not counted, through={}, safety \"\r\n              \"{:g}%, FCU flow parameter: {}\".format(\r\n                  VERSION, min_len_mm,\r\n                  \", \".join(THROUGH_NAMES) if THROUGH_NAMES else \"(none)\", SAFETY,\r\n                  FCU_FLOW_PARAM or \"(none)\"),\r\n              \"Rows: FCU | number | element | suggested ASHRAE code | size mm | \"\r\n              \"length | flow\"]\r\n    sheets = []\r\n    for fcu, label in fcus:\r\n        try:\r\n            lines, sheet = plan_fcu(fcu, label)\r\n        except Exception as ex:\r\n            lines, sheet = [\"FAIL | {} | {}\".format(label, ex)], None\r\n        report.extend(lines)\r\n        if sheet is not None and sheet[\"rows\"]:\r\n            sheets.append(sheet)\r\n\r\n    failed = len(fcus) - len(sheets)\r\n    if not run:\r\n        report.insert(0, \"Summary ({}): PREVIEW ONLY - no file was written. FCUs \"\r\n                         \"matched: {}, failed: {}. Set Run to True to write the \"\r\n                         \"Excel file.\".format(VERSION, len(fcus), failed))\r\n        return report\r\n\r\n    if not sheets:\r\n        report.insert(0, \"Summary ({}): nothing to write. FCUs matched: {}, \"\r\n                         \"failed: {}\".format(VERSION, len(fcus), failed))\r\n        return report\r\n\r\n    try:\r\n        path = output_path()\r\n        write_workbook(path, sheets)\r\n    except Exception as ex:\r\n        report.insert(0, \"Summary ({}): the Excel file could not be written: {}\"\r\n                      .format(VERSION, ex))\r\n        return report\r\n\r\n    report.insert(0, \"Summary ({}): Excel file written with {} FCU sheet(s), \"\r\n                     \"failed: {} | {}\".format(VERSION, len(sheets), failed, path))\r\n    return report\r\n\r\n\r\n# ------------------------------------------------------------------\r\n# Run, and also save the report to %USERPROFILE%\\fcu_script04_report.txt\r\n# ------------------------------------------------------------------\r\ntry:\r\n    _result = main()\r\nexcept Exception:\r\n    _result = [\"SCRIPT ERROR:\", traceback.format_exc()]\r\n\r\ntry:\r\n    _path = os.path.join(os.path.expanduser(\"~\"), \"fcu_script04_report.txt\")\r\n    with open(_path, \"w\", encoding=\"utf-8\") as _f:\r\n        _f.write(\"\\n\".join(str(x) for x in _result))\r\n    _result.append(\"Report saved to: \" + _path)\r\nexcept Exception:\r\n    pass\r\n\r\nOUT = _result\r\n",
+      "Engine": "CPython3",
+      "EngineName": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "4bf8ac5ddc5d45f5b4cd43a01d910a5e",
+      "Inputs": [
+        {
+          "Id": "e5c0118e91b245be82704557ba8151ca",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b1ffc82884f045fb9e21ed01a8343858",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c0a0ff9fd91d41969e300518990cd21b",
+          "Name": "IN[2]",
+          "Description": "Input #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "604d0e7e5d944f8a94b0e3fdb027c56c",
+          "Name": "IN[3]",
+          "Description": "Input #3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b024a7b981e845b685359db42f765d50",
+          "Name": "IN[4]",
+          "Description": "Input #4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d108731450b14b5b8a411e31ad55bc39",
+          "Name": "IN[5]",
+          "Description": "Input #5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8d8298263c7d4da5985734b29d76e60c",
+          "Name": "IN[6]",
+          "Description": "Input #6",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b259a87d61df44e1b47150d3450003a9",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "6e8f7575d2e742489f60f7316b1214b2",
+      "Inputs": [
+        {
+          "Id": "8d7edbf0a3654d6fb1d2b94dcfb6b3ce",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "067255bad0cd4a6bb2d276dbd097d0de",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "cfef0b00a3e040e0b8822b00ee7fd016",
+      "End": "e5c0118e91b245be82704557ba8151ca",
+      "Id": "9c4d07da734c43b0a7c404c001ef326f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9447986855e64cdf917ddda554b4286b",
+      "End": "b1ffc82884f045fb9e21ed01a8343858",
+      "Id": "8c01d352547a40e8bec56860966112fd",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "64b96b7599ce416c804ee83057e842a7",
+      "End": "c0a0ff9fd91d41969e300518990cd21b",
+      "Id": "312f622d18344a74909cf6c908fc5e35",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4475598476eb48d783bcf2d32c7937a8",
+      "End": "604d0e7e5d944f8a94b0e3fdb027c56c",
+      "Id": "9bedc4abc3a241dd992c2c58944fe532",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "eca5393d71d74bf1b3347d1cc7e6efbb",
+      "End": "b024a7b981e845b685359db42f765d50",
+      "Id": "7ed8f76b36694fcb89e4f684f42575a3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "91d7fa37c2844a9c9de6d7389014bcb9",
+      "End": "d108731450b14b5b8a411e31ad55bc39",
+      "Id": "e28904029ec54b3bb48330e41d0ab7df",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "412cfc41b93c477f97e8ca1ee35e542f",
+      "End": "8d8298263c7d4da5985734b29d76e60c",
+      "Id": "8c034c385f4643939bb25ea789d3ec1c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b259a87d61df44e1b47150d3450003a9",
+      "End": "8d7edbf0a3654d6fb1d2b94dcfb6b3ce",
+      "Id": "9137e2e4a726416c92e27e473fd29c2c",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.16",
+      "Data": {}
+    }
+  ],
+  "Author": "Aren",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.16.1.2727",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "ce898ffd0a314057b34c7db3cc2671fb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 0.0
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "da6f612b7b9e4e29ba9a20b3a34fb539",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 130.0
+      },
+      {
+        "Name": "Integer Slider",
+        "ShowGeometry": true,
+        "Id": "fb5eaf90804c42a8986706883a458fb8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 260.0
+      },
+      {
+        "Name": "Integer Slider",
+        "ShowGeometry": true,
+        "Id": "9af795c5f70c48eaa854b6c1ed4b1a85",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 390.0
+      },
+      {
+        "Name": "Boolean",
+        "ShowGeometry": true,
+        "Id": "5f11ba6ea98548e28092fd130a90d328",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 520.0
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "0b49703315184b17a230e64ff7192486",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 650.0
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "c59eba3efa674b0a91b7747e960d7d04",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 780.0
+      },
+      {
+        "Name": "Python Script",
+        "ShowGeometry": true,
+        "Id": "4bf8ac5ddc5d45f5b4cd43a01d910a5e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 700.0,
+        "Y": 390.0
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "6e8f7575d2e742489f60f7316b1214b2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1050.0,
+        "Y": 390.0
+      }
+    ],
+    "Annotations": [],
+    "X": 60.0,
+    "Y": 40.0,
+    "Zoom": 0.6
+  }
+}

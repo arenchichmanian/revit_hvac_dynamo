@@ -1,0 +1,466 @@
+{
+  "Uuid": "1061324f-b8f3-434f-ab63-3b8c9de238a7",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Home",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "FCU-LI-L0-095",
+      "Description": "Creates a string.",
+      "Id": "97f34ec6e3ca4d8b815914e64c871ef3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fcba6f76c5e342f4b5b6ff4d917d017c",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "DLB_ELEMENT Number",
+      "Description": "Creates a string.",
+      "Id": "4f45648b3d8c47d49c930a3f4e19627a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ce695eba4b70464a971b357819ab91a6",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 100,
+      "MaximumValue": 500,
+      "MinimumValue": 0,
+      "StepValue": 10,
+      "Description": "A slider that produces integer values.",
+      "Id": "02cd65b00c154f859425beb0fa9b6848",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c0cb62889db347b889b3d46e2428d4cb",
+          "Name": "",
+          "Description": "Int64",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Integer",
+      "InputValue": 100,
+      "MaximumValue": 500,
+      "MinimumValue": 10,
+      "StepValue": 10,
+      "Description": "A slider that produces integer values.",
+      "Id": "be624803fad7475f96878c443dffd5d2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "278b3b1d39cf4fd28be3c44092805ea1",
+          "Name": "",
+          "Description": "Int64",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": false,
+      "Description": "Selection between a true and false.",
+      "Id": "f6893486847f4edba8c7760d38f57a75",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "61cc02ebaef54de39029b1fd23b50e71",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "DLB-Designation",
+      "Description": "Creates a string.",
+      "Id": "ad4d888c78444b7f8e28e2e9d1fa973a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0f9493a88e164918a19a67eeb2218262",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "branches=depth; through=fcu-pl, plenum; detail=yes",
+      "Description": "Creates a string.",
+      "Id": "43db9c3a35a745aab03544b0ed94931b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3e01321bf7ea4915a1aef3c9be6b44cc",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# fcu_element_numbering.py  (v1.3)\r\n# Dynamo for Revit - Python Script node, CPython3 engine\r\n# Author: Aren  |  License: MIT (see LICENSE in the repo root)\r\n# Numbers the duct-side elements of each FCU by their distance along the route\r\n# from the return air terminal, so the LONGEST route reaches the biggest number\r\n# (needed for pressure loss calculation). The FCU itself is not numbered.\r\n#\r\n#   return side element:  number = R - depth + 1   (R = longest return route)\r\n#   supply side element:  number = R + depth\r\n#   depth = distance from the FCU in COUNTED elements (the first one = 1)\r\n#\r\n# Rigid ducts at or below the minimum length are too short to cause a pressure\r\n# drop. They are walked through (the network continues past them) but not\r\n# counted, and they are written as 0 (= not numbered).\r\n#\r\n# Version history\r\n#   v1.3  duct system type read as a number (works in CPython3); plenum-type\r\n#         equipment is walked through and numbered; shared common block v2;\r\n#         options string; Run toggle; report saved to a file\r\n#   v1.2  short ducts not counted\r\n#\r\n# Inputs:\r\n#   IN[0] filter text (\"contains\" match)               e.g. FCU-LI-L0-095\r\n#   IN[1] parameter to write numbers into              default DLB_ELEMENT Number\r\n#   IN[2] minimum duct length in mm (0 = rule off)     e.g. 100\r\n#   IN[3] max hops (safety limit for the duct walk)    e.g. 100\r\n#   IN[4] run (False = preview only, True = write)\r\n#   IN[5] parameter to filter on                       default DLB-Designation\r\n#   IN[6] options: \"key=value; key=value\"\r\n#           branches=depth|zero        (default depth)\r\n#             depth = branch elements get the distance-based number\r\n#             zero  = branch elements get 0 (only the longest route is numbered)\r\n#           through=word, word         (default fcu-pl, plenum)\r\n#             Mechanical Equipment whose family name contains one of these\r\n#             words is part of the route (for example a plenum) and is numbered\r\n#           detail=yes|no              (default yes) list every numbered element\r\n# Special filter parameter values: @type, @family, @familytype\r\n\r\nimport os\r\nimport traceback\r\nimport clr\r\n\r\nclr.AddReference('RevitAPI')\r\nclr.AddReference('RevitServices')\r\n\r\nfrom Autodesk.Revit.DB import (\r\n    FilteredElementCollector, BuiltInCategory, BuiltInParameter,\r\n    Element, FamilyInstance, MEPCurve, Domain, StorageType, LocationCurve\r\n)\r\nfrom System import Int32\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\n\r\ndoc = DocumentManager.Instance.CurrentDBDocument\r\n\r\nVERSION = \"v1.3\"\r\n\r\n\r\n# ---- COMMON BLOCK v2 (begin) -------------------------------------------\r\n# Identical in scripts 01, 02, 04 and 05. Change it in common/network_walk.py\r\n# first, then paste it into every script. It needs only the imports above\r\n# (BuiltInCategory, BuiltInParameter, MEPCurve, FamilyInstance, Domain,\r\n# LocationCurve) and no global variables.\r\n# v2: equipment whose family name contains one of `through_names` (for example\r\n# a plenum) is walked through as part of the network.\r\n\r\n# Categories that count as part of an equipment's duct network\r\nALLOWED_CATS = {\r\n    int(BuiltInCategory.OST_DuctCurves),\r\n    int(BuiltInCategory.OST_FlexDuctCurves),\r\n    int(BuiltInCategory.OST_DuctFitting),\r\n    int(BuiltInCategory.OST_DuctAccessory),\r\n    int(BuiltInCategory.OST_DuctTerminal),\r\n}\r\n\r\nDUCT_CAT = int(BuiltInCategory.OST_DuctCurves)\r\nEQUIPMENT_CAT = int(BuiltInCategory.OST_MechanicalEquipment)\r\n\r\n\r\ndef eid_int(eid):\r\n    \"\"\"ElementId -> int. Works on old and new Revit versions.\"\"\"\r\n    try:\r\n        return eid.Value            # Revit 2024+\r\n    except AttributeError:\r\n        return eid.IntegerValue     # older versions\r\n\r\n\r\ndef family_name_lower(el):\r\n    \"\"\"Lowercase family name of a placed family, or '' if unavailable.\"\"\"\r\n    try:\r\n        return str(el.Symbol.FamilyName).lower()\r\n    except Exception:\r\n        return \"\"\r\n\r\n\r\ndef is_pass_through(el, through_names):\r\n    \"\"\"True for mechanical equipment whose family name contains a through word.\"\"\"\r\n    if not through_names:\r\n        return False\r\n    cat = el.Category\r\n    if cat is None or eid_int(cat.Id) != EQUIPMENT_CAT:\r\n        return False\r\n    fam = family_name_lower(el)\r\n    for word in through_names:\r\n        if word in fam:\r\n            return True\r\n    return False\r\n\r\n\r\ndef is_allowed(el, through_names=()):\r\n    cat = el.Category\r\n    if cat is None:\r\n        return False\r\n    if eid_int(cat.Id) in ALLOWED_CATS:\r\n        return True\r\n    return is_pass_through(el, through_names)\r\n\r\n\r\ndef duct_length_ft(el):\r\n    \"\"\"Length of a duct in feet, or None if it cannot be read.\"\"\"\r\n    try:\r\n        p = el.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH)\r\n        if p is not None and p.HasValue:\r\n            return p.AsDouble()\r\n    except Exception:\r\n        pass\r\n    try:\r\n        loc = el.Location\r\n        if isinstance(loc, LocationCurve):\r\n            return loc.Curve.Length\r\n    except Exception:\r\n        pass\r\n    return None\r\n\r\n\r\ndef is_small_duct(el, min_len_ft):\r\n    \"\"\"True for a rigid duct at or below the minimum length (no pressure drop).\"\"\"\r\n    if min_len_ft <= 0:\r\n        return False\r\n    cat = el.Category\r\n    if cat is None or eid_int(cat.Id) != DUCT_CAT:\r\n        return False\r\n    length = duct_length_ft(el)\r\n    return length is not None and length <= min_len_ft + 1e-6\r\n\r\n\r\ndef get_connectors(el):\r\n    \"\"\"Return all connectors of a duct curve or a family instance.\"\"\"\r\n    try:\r\n        if isinstance(el, MEPCurve):\r\n            return list(el.ConnectorManager.Connectors)\r\n        if isinstance(el, FamilyInstance):\r\n            mep = el.MEPModel\r\n            if mep is not None and mep.ConnectorManager is not None:\r\n                return list(mep.ConnectorManager.Connectors)\r\n    except Exception:\r\n        pass\r\n    return []\r\n\r\n\r\ndef neighbors_of_connector(c, self_id, through_names):\r\n    \"\"\"Allowed elements joined to connector c (never the owner itself).\"\"\"\r\n    out = []\r\n    try:\r\n        if not c.IsConnected:\r\n            return out\r\n        for ref in c.AllRefs:\r\n            o = ref.Owner\r\n            if o is None:\r\n                continue\r\n            if eid_int(o.Id) == self_id:\r\n                continue\r\n            if not isinstance(o, (MEPCurve, FamilyInstance)):\r\n                continue            # skips the logical system element\r\n            if not is_allowed(o, through_names):\r\n                continue            # skips other equipment\r\n            out.append(o)\r\n    except Exception:\r\n        pass\r\n    return out\r\n\r\n\r\ndef element_neighbors(el, through_names):\r\n    \"\"\"Allowed elements reachable from el through its duct (HVAC) connectors.\"\"\"\r\n    sid = eid_int(el.Id)\r\n    out = []\r\n    for c in get_connectors(el):\r\n        try:\r\n            if c.Domain != Domain.DomainHvac:\r\n                continue\r\n        except Exception:\r\n            continue\r\n        out.extend(neighbors_of_connector(c, sid, through_names))\r\n    return out\r\n\r\n\r\ndef walk_side(roots, blocked, max_hops, min_len_ft, through_names):\r\n    \"\"\"\r\n    Breadth-first walk outward from the elements touching an equipment connector.\r\n    roots:         elements touching the connector(s) of the side being walked.\r\n    blocked:       element ids that belong to another side (never entered).\r\n    max_hops:      safety limit on how far the walk goes.\r\n    min_len_ft:    short-duct threshold in feet (0 = rule off).\r\n    through_names: lowercase words; equipment whose family name contains one\r\n                   of them is walked through (for example a plenum).\r\n    Returns (order, depth, parent, skipped, truncated, overlaps).\r\n      order:   elements in discovery order (short ducts included)\r\n      depth:   id -> distance in COUNTED elements; a short duct has the same\r\n               depth as the element it was reached from\r\n      parent:  id -> id of the element it was reached from (None for roots)\r\n      skipped: ids of short ducts (walked through, never counted)\r\n    \"\"\"\r\n    depth, parent, order = {}, {}, []\r\n    skipped = set()\r\n    overlaps = 0\r\n    frontier = []\r\n    for r in roots:\r\n        rid = eid_int(r.Id)\r\n        if rid in depth:\r\n            continue\r\n        if rid in blocked:\r\n            overlaps += 1\r\n            continue\r\n        small = is_small_duct(r, min_len_ft)\r\n        if small:\r\n            skipped.add(rid)\r\n        depth[rid] = 0 if small else 1\r\n        parent[rid] = None\r\n        order.append(r)\r\n        frontier.append(r)\r\n\r\n    hops = 1\r\n    while frontier and hops < max_hops:\r\n        nxt = []\r\n        for el in frontier:\r\n            eid = eid_int(el.Id)\r\n            for o in element_neighbors(el, through_names):\r\n                oid = eid_int(o.Id)\r\n                if oid in depth:\r\n                    continue\r\n                if oid in blocked:\r\n                    overlaps += 1\r\n                    continue\r\n                small = is_small_duct(o, min_len_ft)\r\n                if small:\r\n                    skipped.add(oid)\r\n                depth[oid] = depth[eid] + (0 if small else 1)\r\n                parent[oid] = eid\r\n                order.append(o)\r\n                nxt.append(o)\r\n        frontier = nxt\r\n        hops += 1\r\n    return order, depth, parent, skipped, len(frontier) > 0, overlaps\r\n\r\n# ---- COMMON BLOCK v2 (end) ---------------------------------------------\r\n\r\n\r\n# ------------------------------------------------------------------\r\n# Inputs\r\n# ------------------------------------------------------------------\r\nDEFAULT_FILTER_PARAM = \"DLB-Designation\"\r\nDEFAULT_NUMBER_PARAM = \"DLB_ELEMENT Number\"\r\n\r\nDEFAULT_OPTIONS = {\r\n    \"branches\": \"depth\",\r\n    \"through\": \"fcu-pl, plenum\",\r\n    \"detail\": \"yes\",\r\n}\r\n\r\n\r\ndef inp(i, default):\r\n    \"\"\"Read IN[i] as trimmed text; use default if missing, None or empty.\"\"\"\r\n    try:\r\n        v = IN[i]\r\n    except Exception:\r\n        return default\r\n    if v is None:\r\n        return default\r\n    s = str(v).strip()\r\n    return s if s else default\r\n\r\n\r\ndef norm(text):\r\n    \"\"\"Lowercase and treat '.' like '-' so FCU.LI.L0.016 == FCU-LI-L0-016.\"\"\"\r\n    return str(text).strip().lower().replace('.', '-')\r\n\r\n\r\ndef parse_options(text):\r\n    \"\"\"'a=1; b=2' -> ({'a': '1', 'b': '2'} merged over defaults, [unknown parts]).\"\"\"\r\n    opts = dict(DEFAULT_OPTIONS)\r\n    unknown = []\r\n    for part in text.replace(\"\\n\", \";\").split(\";\"):\r\n        part = part.strip()\r\n        if not part:\r\n            continue\r\n        if \"=\" not in part:\r\n            unknown.append(part)\r\n            continue\r\n        k, v = part.split(\"=\", 1)\r\n        k = k.strip().lower()\r\n        v = v.strip()\r\n        if k in opts:\r\n            opts[k] = v\r\n        else:\r\n            unknown.append(part)\r\n    return opts, unknown\r\n\r\n\r\nfilter_text  = norm(inp(0, \"\"))\r\nNUM_PARAM    = inp(1, DEFAULT_NUMBER_PARAM)\r\nmin_len_mm   = float(inp(2, \"100\"))\r\nmin_len_ft   = min_len_mm / 304.8       # Revit works in feet\r\nmax_hops     = int(float(inp(3, \"100\")))\r\nrun          = bool(IN[4])\r\nFILTER_PARAM = inp(5, DEFAULT_FILTER_PARAM)\r\n\r\nOPTS, UNKNOWN_OPTS = parse_options(inp(6, \"\"))\r\nBRANCH_MODE   = OPTS[\"branches\"].lower()\r\nDETAIL        = OPTS[\"detail\"].lower()\r\nTHROUGH_NAMES = tuple(t.strip().lower() for t in OPTS[\"through\"].split(\",\")\r\n                      if t.strip())\r\n\r\n# Short labels used in the report\r\nCAT_ABBR = {\r\n    int(BuiltInCategory.OST_DuctTerminal): \"AT\",\r\n    int(BuiltInCategory.OST_DuctCurves): \"D\",\r\n    int(BuiltInCategory.OST_FlexDuctCurves): \"FX\",\r\n    int(BuiltInCategory.OST_DuctFitting): \"F\",\r\n    int(BuiltInCategory.OST_DuctAccessory): \"ACC\",\r\n    EQUIPMENT_CAT: \"PL\",\r\n}\r\n\r\n# DuctSystemType arrives as a plain number in the CPython3 engine\r\nSYS_SUPPLY, SYS_RETURN, SYS_EXHAUST = 1, 2, 3\r\nDIR_IN, DIR_OUT = 1, 2\r\n\r\n\r\ndef option_errors():\r\n    \"\"\"Problems with the inputs. Empty list means all good.\"\"\"\r\n    errs = []\r\n    for u in UNKNOWN_OPTS:\r\n        errs.append(\"Unknown option '{}'. Allowed keys: branches, through, \"\r\n                    \"detail.\".format(u))\r\n    if BRANCH_MODE not in (\"depth\", \"zero\"):\r\n        errs.append(\"branches must be depth or zero (got '{}').\".format(BRANCH_MODE))\r\n    if DETAIL not in (\"yes\", \"no\"):\r\n        errs.append(\"detail must be yes or no (got '{}').\".format(DETAIL))\r\n    if min_len_mm < 0:\r\n        errs.append(\"minimum duct length cannot be negative.\")\r\n    if max_hops < 1:\r\n        errs.append(\"max hops must be 1 or more.\")\r\n    return errs\r\n\r\n\r\n# ------------------------------------------------------------------\r\n# Helpers\r\n# ------------------------------------------------------------------\r\ndef get_name(el):\r\n    \"\"\"\r\n    Read an element's name through the base class (CPython3 workaround for\r\n    'TypeError: property cannot be read'), falling back to built-in parameters.\r\n    \"\"\"\r\n    if el is None:\r\n        return \"\"\r\n    try:\r\n        return str(Element.Name.__get__(el))\r\n    except Exception:\r\n        pass\r\n    for bip in (BuiltInParameter.SYMBOL_NAME_PARAM, BuiltInParameter.VIEW_NAME):\r\n        try:\r\n            p = el.get_Parameter(bip)\r\n            if p is not None:\r\n                s = p.AsString()\r\n                if s:\r\n                    return str(s)\r\n        except Exception:\r\n            pass\r\n    return \"\"\r\n\r\n\r\ndef get_family_name(etype):\r\n    \"\"\"Family name of a family type (empty string if unavailable).\"\"\"\r\n    if etype is None:\r\n        return \"\"\r\n    try:\r\n        return str(etype.FamilyName)\r\n    except Exception:\r\n        pass\r\n    try:\r\n        p = etype.get_Parameter(BuiltInParameter.SYMBOL_FAMILY_NAME_PARAM)\r\n        if p is not None:\r\n            s = p.AsString()\r\n            if s:\r\n                return str(s)\r\n    except Exception:\r\n        pass\r\n    return \"\"\r\n\r\n\r\ndef type_label(el):\r\n    \"\"\"'family : type' of an element, for the report.\"\"\"\r\n    try:\r\n        etype = doc.GetElement(el.GetTypeId())\r\n    except Exception:\r\n        etype = None\r\n    if etype is None:\r\n        return \"?\"\r\n    fam = get_family_name(etype)\r\n    typ = get_name(etype)\r\n    return (fam + \" : \" + typ) if fam else (typ or \"?\")\r\n\r\n\r\ndef abbr(el):\r\n    cat = el.Category\r\n    if cat is None:\r\n        return \"?\"\r\n    return CAT_ABBR.get(eid_int(cat.Id), \"?\")\r\n\r\n\r\ndef lengths_text(elements):\r\n    \"\"\"Lengths in mm of up to 10 elements, for the report.\"\"\"\r\n    vals = []\r\n    for e in elements[:10]:\r\n        L = duct_length_ft(e)\r\n        vals.append(\"{:.0f}\".format(L * 304.8) if L is not None else \"?\")\r\n    return \", \".join(vals) + (\" ...\" if len(elements) > 10 else \"\")\r\n\r\n\r\ndef get_param_value(el, spec):\r\n    \"\"\"\r\n    Text value of the parameter called `spec`, or None if missing/empty.\r\n    Looks at the placed element first, then at its type.\r\n    Special specs: @type, @family, @familytype.\r\n    \"\"\"\r\n    key = spec.strip().lower()\r\n    etype = doc.GetElement(el.GetTypeId())\r\n\r\n    if key in (\"@type\", \"@family\", \"@familytype\"):\r\n        if etype is None:\r\n            return None\r\n        fam = get_family_name(etype)\r\n        typ = get_name(etype)\r\n        if key == \"@type\":\r\n            val = typ\r\n        elif key == \"@family\":\r\n            val = fam\r\n        else:\r\n            val = fam + \" - \" + typ\r\n        val = val.strip()\r\n        return val if val else None\r\n\r\n    p = el.LookupParameter(spec.strip())\r\n    if p is None and etype is not None:\r\n        p = etype.LookupParameter(spec.strip())\r\n    if p is None:\r\n        return None\r\n    val = p.AsString()\r\n    if not val:\r\n        val = p.AsValueString()\r\n    return val.strip() if val else None\r\n\r\n\r\ndef find_targets():\r\n    \"\"\"(element, filter value) for mechanical equipment matching the filter.\"\"\"\r\n    matched = []\r\n    col = (FilteredElementCollector(doc)\r\n           .OfCategory(BuiltInCategory.OST_MechanicalEquipment)\r\n           .WhereElementIsNotElementType())\r\n    for el in col:\r\n        if not isinstance(el, FamilyInstance):\r\n            continue\r\n        if is_pass_through(el, THROUGH_NAMES):\r\n            continue                # a plenum is part of a route, never a target\r\n        val = get_param_value(el, FILTER_PARAM)\r\n        if val and filter_text in norm(val):\r\n            matched.append((el, val))\r\n    matched.sort(key=lambda t: t[1])\r\n    return matched\r\n\r\n\r\ndef as_number(value):\r\n    \"\"\"Enum or number -> int, or None. Enums are plain ints in CPython3.\"\"\"\r\n    try:\r\n        return int(value)\r\n    except Exception:\r\n        pass\r\n    text = str(value).lower()\r\n    if \"supply\" in text:\r\n        return SYS_SUPPLY\r\n    if \"return\" in text:\r\n        return SYS_RETURN\r\n    if \"exhaust\" in text:\r\n        return SYS_EXHAUST\r\n    return None\r\n\r\n\r\ndef find_fcu_connectors(fcu):\r\n    \"\"\"\r\n    Returns (return_connectors, supply_connectors, note).\r\n    First choice: the duct system type of each duct connector\r\n    (2 = Return Air, 1 = Supply Air). If that gives nothing, Exhaust Air\r\n    counts as return; last resort is the flow direction (In = return side,\r\n    Out = supply side).\r\n    \"\"\"\r\n    hvac = []\r\n    for c in get_connectors(fcu):\r\n        try:\r\n            if c.Domain != Domain.DomainHvac:\r\n                continue\r\n        except Exception:\r\n            continue\r\n        hvac.append(c)\r\n\r\n    ret, sup, exh, seen = [], [], [], []\r\n    for c in hvac:\r\n        try:\r\n            st = as_number(c.DuctSystemType)\r\n        except Exception:\r\n            st = None\r\n        seen.append(\"?\" if st is None else str(st))\r\n        if st == SYS_RETURN:\r\n            ret.append(c)\r\n        elif st == SYS_SUPPLY:\r\n            sup.append(c)\r\n        elif st == SYS_EXHAUST:\r\n            exh.append(c)\r\n\r\n    note = \"\"\r\n    if not ret and exh:\r\n        ret = exh\r\n        note = \"no Return Air connector, used the Exhaust Air connector as return\"\r\n\r\n    if not ret or not sup:\r\n        ret2, sup2 = [], []\r\n        for c in hvac:\r\n            try:\r\n                d = as_number(c.Direction)\r\n            except Exception:\r\n                d = None\r\n            if d == DIR_IN:\r\n                ret2.append(c)\r\n            elif d == DIR_OUT:\r\n                sup2.append(c)\r\n        if ret2 and sup2:\r\n            ret, sup = ret2, sup2\r\n            note = (\"system types not usable ({}), sides taken from the flow \"\r\n                    \"direction (In = return, Out = supply)\".format(\", \".join(seen)))\r\n        else:\r\n            note = \"duct connectors found: {} (system types: {})\".format(\r\n                len(hvac), \", \".join(seen) or \"none\")\r\n    return ret, sup, note\r\n\r\n\r\ndef longest_route(order, depth, parent, skipped):\r\n    \"\"\"Counted elements along the deepest path, listed from the FCU outward.\"\"\"\r\n    counted = [e for e in order if eid_int(e.Id) not in skipped]\r\n    if not counted:\r\n        return []\r\n    by_id = {}\r\n    for e in order:\r\n        by_id[eid_int(e.Id)] = e\r\n    leaf = max(counted, key=lambda e: (depth[eid_int(e.Id)], -eid_int(e.Id)))\r\n    route = []\r\n    cur = eid_int(leaf.Id)\r\n    while cur is not None:\r\n        if cur not in skipped:\r\n            route.append(by_id[cur])\r\n        cur = parent[cur]\r\n    route.reverse()\r\n    return route\r\n\r\n\r\ndef route_string(ret_numbered, sup_route):\r\n    parts = [abbr(e) for e in ret_numbered] + [\"[FCU]\"] + [abbr(e) for e in sup_route]\r\n    return \">\".join(parts)\r\n\r\n\r\ndef plan_fcu(fcu, label, assigned):\r\n    \"\"\"\r\n    Work out the numbering for one FCU (read-only).\r\n    Returns (report_lines, items, detail_lines)\r\n    where items = [(label, element, number), ...].\r\n    \"\"\"\r\n    ret_c, sup_c, note = find_fcu_connectors(fcu)\r\n    if not ret_c or not sup_c:\r\n        return ([\"FAIL | {} | needs a Return Air and a Supply Air duct connector | {}\"\r\n                 .format(label, note)], [], [])\r\n\r\n    fid = eid_int(fcu.Id)\r\n    ret_roots = []\r\n    for c in ret_c:\r\n        ret_roots.extend(neighbors_of_connector(c, fid, THROUGH_NAMES))\r\n    sup_roots = []\r\n    for c in sup_c:\r\n        sup_roots.extend(neighbors_of_connector(c, fid, THROUGH_NAMES))\r\n    if not ret_roots or not sup_roots:\r\n        side = \"Return Air\" if not ret_roots else \"Supply Air\"\r\n        return ([\"FAIL | {} | the {} connector is not connected to any duct, fitting, \"\r\n                 \"accessory, air terminal or plenum\".format(label, side)], [], [])\r\n\r\n    r_order, r_depth, r_parent, r_skip, r_trunc, _ = walk_side(\r\n        ret_roots, set(), max_hops, min_len_ft, THROUGH_NAMES)\r\n    s_order, s_depth, s_parent, s_skip, s_trunc, s_overlaps = walk_side(\r\n        sup_roots, set(r_depth.keys()), max_hops, min_len_ft, THROUGH_NAMES)\r\n\r\n    r_route = longest_route(r_order, r_depth, r_parent, r_skip)   # FCU -> far end\r\n    s_route = longest_route(s_order, s_depth, s_parent, s_skip)   # FCU -> far end\r\n    r_numbered = list(reversed(r_route))                          # far end -> FCU\r\n    main = r_numbered + s_route\r\n    main_ids = set(eid_int(e.Id) for e in main)\r\n    R = len(r_route)\r\n    S = len(s_route)\r\n\r\n    # (element, number, where) triples. The longest route always gets\r\n    # R - depth + 1 (return) and R + depth (supply), so its far supply end is\r\n    # R + S, the highest number. Branch elements follow the same distance\r\n    # formula (\"depth\" mode) or get 0 (\"zero\" mode); none can exceed R + S.\r\n    # Short ducts are never counted: they always get 0.\r\n    triples = []\r\n    for e in r_numbered:\r\n        triples.append((e, R - r_depth[eid_int(e.Id)] + 1, \"return, main route\"))\r\n    for e in s_route:\r\n        triples.append((e, R + s_depth[eid_int(e.Id)], \"supply, main route\"))\r\n    off_count = 0\r\n    skipped_els = []\r\n    for side, order, depth, skip in ((\"return\", r_order, r_depth, r_skip),\r\n                                     (\"supply\", s_order, s_depth, s_skip)):\r\n        for e in order:\r\n            eid = eid_int(e.Id)\r\n            if eid in main_ids:\r\n                continue\r\n            if eid in skip:\r\n                skipped_els.append(e)\r\n                triples.append((e, 0, side + \", short duct\"))\r\n                continue\r\n            off_count += 1\r\n            if BRANCH_MODE == \"depth\":\r\n                n = (R - depth[eid] + 1) if side == \"return\" else (R + depth[eid])\r\n            else:\r\n                n = 0\r\n            triples.append((e, n, side + \", branch\"))\r\n\r\n    items = []\r\n    conflicts = {}\r\n    kept = []\r\n    for el, n, where in triples:\r\n        eid = eid_int(el.Id)\r\n        if eid in assigned:\r\n            other = assigned[eid]\r\n            conflicts[other] = conflicts.get(other, 0) + 1\r\n            continue\r\n        assigned[eid] = label\r\n        items.append((label, el, n))\r\n        kept.append((el, n, where))\r\n\r\n    mode_txt = (\"numbered by distance from the FCU\" if BRANCH_MODE == \"depth\"\r\n                else \"set to 0\")\r\n    short_txt = \"\"\r\n    if skipped_els:\r\n        short_txt = \", short ducts not counted: {} [mm: {}]\".format(\r\n            len(skipped_els), lengths_text(skipped_els))\r\n    lines = [\"PLAN | {} | longest route {} elements (return {} + supply {}), \"\r\n             \"highest number {}, {} branch element(s) {}{} | {}\"\r\n             .format(label, len(main), R, S, R + S, off_count, mode_txt, short_txt,\r\n                     route_string(r_numbered, s_route))]\r\n    if note:\r\n        lines.append(\"NOTE | {} | {}\".format(label, note))\r\n    through_found = [type_label(e) for e, _, _ in kept if abbr(e) == \"PL\"]\r\n    if through_found:\r\n        lines.append(\"NOTE | {} | numbered {} equipment piece(s) as route \"\r\n                     \"element(s): {}\".format(label, len(through_found),\r\n                                             \", \".join(through_found)))\r\n    if r_trunc or s_trunc:\r\n        lines.append(\"WARNING | {} | hop limit reached on the {} side, network may be \"\r\n                     \"incomplete\".format(label, \"return\" if r_trunc else \"supply\"))\r\n    if s_overlaps:\r\n        lines.append(\"WARNING | {} | the return and supply sides touch each other \"\r\n                     \"({} connection(s)), check for a loop\".format(label, s_overlaps))\r\n    for other in sorted(conflicts):\r\n        lines.append(\"WARNING | {} | {} element(s) were already numbered under {}, \"\r\n                     \"kept those numbers\".format(label, conflicts[other], other))\r\n    if not r_route or not s_route:\r\n        lines.append(\"WARNING | {} | the {} side has no countable element (only \"\r\n                     \"short ducts?)\".format(label, \"return\" if not r_route else \"supply\"))\r\n    if r_route and abbr(r_route[-1]) != \"AT\":\r\n        lines.append(\"WARNING | {} | return route starts at '{}', not an air terminal \"\r\n                     \"(open end?)\".format(label, abbr(r_route[-1])))\r\n    if s_route and abbr(s_route[-1]) != \"AT\":\r\n        lines.append(\"WARNING | {} | supply route ends at '{}', not an air terminal \"\r\n                     \"(open end?)\".format(label, abbr(s_route[-1])))\r\n\r\n    detail = []\r\n    if DETAIL == \"yes\":\r\n        for el, n, where in sorted(kept, key=lambda t: (t[1] == 0, t[1],\r\n                                                        eid_int(t[0].Id))):\r\n            detail.append(\"  {} | {:>3} | {:<3} | id {} | {} | {}\".format(\r\n                label, n, abbr(el), eid_int(el.Id), where, type_label(el)))\r\n    return lines, items, detail\r\n\r\n\r\ndef write_number(el, value):\r\n    \"\"\"Write one number. Returns a short status word.\"\"\"\r\n    try:\r\n        p = el.LookupParameter(NUM_PARAM)\r\n        if p is None:\r\n            return \"param-not-found\"\r\n        if p.IsReadOnly:\r\n            return \"read-only\"\r\n        st = p.StorageType\r\n        if st == StorageType.Integer:\r\n            ok = p.Set(Int32(value))\r\n        elif st == StorageType.String:\r\n            ok = p.Set(str(value))\r\n        else:\r\n            return \"wrong-type\"\r\n        return \"ok\" if ok else \"set-failed\"\r\n    except Exception as ex:\r\n        return \"error: {}\".format(ex)\r\n\r\n\r\n# ------------------------------------------------------------------\r\n# Main\r\n# ------------------------------------------------------------------\r\ndef main():\r\n    errs = option_errors()\r\n    if errs:\r\n        return [\"INPUT ERROR | \" + e for e in errs]\r\n\r\n    if not filter_text:\r\n        return [\"Filter text is empty - refusing to run on all equipment.\"]\r\n\r\n    fcus = find_targets()\r\n    if not fcus:\r\n        return [\"No equipment with '{}' containing '{}'.\"\r\n                .format(FILTER_PARAM, filter_text)]\r\n\r\n    report = [\"Settings ({}): branches={}, ducts <= {:.0f} mm not counted, \"\r\n              \"through={}, max hops {}\".format(\r\n                  VERSION, BRANCH_MODE, min_len_mm,\r\n                  \", \".join(THROUGH_NAMES) if THROUGH_NAMES else \"(none)\", max_hops),\r\n              \"Legend: AT air terminal, D duct, FX flex duct, F fitting, \"\r\n              \"ACC accessory, PL plenum, ? other\"]\r\n    assigned = {}\r\n    to_write = []\r\n    details = []\r\n    for fcu, label in fcus:\r\n        try:\r\n            lines, items, detail = plan_fcu(fcu, label, assigned)\r\n        except Exception as ex:\r\n            lines, items, detail = [\"FAIL | {} | {}\".format(label, ex)], [], []\r\n        report.extend(lines)\r\n        to_write.extend(items)\r\n        details.extend(detail)\r\n\r\n    failed = sum(1 for r in report if r.startswith(\"FAIL\"))\r\n    if details:\r\n        report.append(\"Elements (FCU | number | kind | id | where | family : type), \"\r\n                      \"0 = not numbered:\")\r\n        report.extend(details)\r\n\r\n    if not run:\r\n        report.insert(0, \"Summary ({}): PREVIEW ONLY - nothing was written. FCUs \"\r\n                         \"matched: {}, failed: {}. Set Run to True to write '{}'.\"\r\n                      .format(VERSION, len(fcus), failed, NUM_PARAM))\r\n        return report\r\n\r\n    tally = {}\r\n    if to_write:\r\n        TransactionManager.Instance.EnsureInTransaction(doc)\r\n        try:\r\n            for label, el, n in to_write:\r\n                status = write_number(el, n)\r\n                t = tally.setdefault(label, {})\r\n                t[status] = t.get(status, 0) + 1\r\n        finally:\r\n            TransactionManager.Instance.TransactionTaskDone()\r\n\r\n    for label in sorted(tally):\r\n        report.append(\"WRITE | {} | {}\".format(\r\n            label, \", \".join(\"{}={}\".format(k, v)\r\n                             for k, v in sorted(tally[label].items()))))\r\n    report.insert(0, \"Summary ({}): WRITE MODE - FCUs matched: {}, failed: {}, \"\r\n                     \"numbers sent to '{}': {}\"\r\n                  .format(VERSION, len(fcus), failed, NUM_PARAM, len(to_write)))\r\n    return report\r\n\r\n\r\n# ------------------------------------------------------------------\r\n# Run, and also save the report to %USERPROFILE%\\fcu_script02_report.txt\r\n# ------------------------------------------------------------------\r\ntry:\r\n    _result = main()\r\nexcept Exception:\r\n    _result = [\"SCRIPT ERROR:\", traceback.format_exc()]\r\n\r\ntry:\r\n    _path = os.path.join(os.path.expanduser(\"~\"), \"fcu_script02_report.txt\")\r\n    with open(_path, \"w\", encoding=\"utf-8\") as _f:\r\n        _f.write(\"\\n\".join(str(x) for x in _result))\r\n    _result.append(\"Report saved to: \" + _path)\r\nexcept Exception:\r\n    pass\r\n\r\nOUT = _result\r\n",
+      "Engine": "CPython3",
+      "EngineName": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "c2e28f72624a4113acf13b3b9ef32bd8",
+      "Inputs": [
+        {
+          "Id": "8d44978c8fa9421cbefe27b7fcdd629a",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8d92cdbd724349a4aec7e97c110f610d",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "eb57fcc661ab4d9196b9a35fe8d05b20",
+          "Name": "IN[2]",
+          "Description": "Input #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5c0ab59951c245d8a4be793089ebaec4",
+          "Name": "IN[3]",
+          "Description": "Input #3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5437efa4fc1647f39dc896bad3562006",
+          "Name": "IN[4]",
+          "Description": "Input #4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7510681244e645fe90f781385651d32e",
+          "Name": "IN[5]",
+          "Description": "Input #5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2e036b6451354f6dbe26592287bbef33",
+          "Name": "IN[6]",
+          "Description": "Input #6",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2baabe77bce74ae6adf0de421aee3725",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "d1eb15caee93484f8c345747a3849a49",
+      "Inputs": [
+        {
+          "Id": "a53863f9191e432bab2132350c0c3da3",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "39ed634b00ae46a39421935dd6bade7b",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "fcba6f76c5e342f4b5b6ff4d917d017c",
+      "End": "8d44978c8fa9421cbefe27b7fcdd629a",
+      "Id": "d30c0d0326cd43dcab77150ed45589ed",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ce695eba4b70464a971b357819ab91a6",
+      "End": "8d92cdbd724349a4aec7e97c110f610d",
+      "Id": "5e844513afd942e880b8eb296186e1cf",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c0cb62889db347b889b3d46e2428d4cb",
+      "End": "eb57fcc661ab4d9196b9a35fe8d05b20",
+      "Id": "990a5ee75b234781bcd26b7c914a4a86",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "278b3b1d39cf4fd28be3c44092805ea1",
+      "End": "5c0ab59951c245d8a4be793089ebaec4",
+      "Id": "b6a2c137d0f24cd48212871824dea0fa",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "61cc02ebaef54de39029b1fd23b50e71",
+      "End": "5437efa4fc1647f39dc896bad3562006",
+      "Id": "eb40d10c0f9a4211b86412d026dd1141",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0f9493a88e164918a19a67eeb2218262",
+      "End": "7510681244e645fe90f781385651d32e",
+      "Id": "9bf885da868e4bd2a6d1e77aa7408009",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3e01321bf7ea4915a1aef3c9be6b44cc",
+      "End": "2e036b6451354f6dbe26592287bbef33",
+      "Id": "e57e9c3120c64ca0b80334dad2056f03",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2baabe77bce74ae6adf0de421aee3725",
+      "End": "a53863f9191e432bab2132350c0c3da3",
+      "Id": "69fdc383e7414971a95b7c377cb234df",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.16",
+      "Data": {}
+    }
+  ],
+  "Author": "Aren",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.16.1.2727",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "97f34ec6e3ca4d8b815914e64c871ef3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 0.0
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "4f45648b3d8c47d49c930a3f4e19627a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 130.0
+      },
+      {
+        "Name": "Integer Slider",
+        "ShowGeometry": true,
+        "Id": "02cd65b00c154f859425beb0fa9b6848",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 260.0
+      },
+      {
+        "Name": "Integer Slider",
+        "ShowGeometry": true,
+        "Id": "be624803fad7475f96878c443dffd5d2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 390.0
+      },
+      {
+        "Name": "Boolean",
+        "ShowGeometry": true,
+        "Id": "f6893486847f4edba8c7760d38f57a75",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 520.0
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "ad4d888c78444b7f8e28e2e9d1fa973a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 650.0
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "43db9c3a35a745aab03544b0ed94931b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 0.0,
+        "Y": 780.0
+      },
+      {
+        "Name": "Python Script",
+        "ShowGeometry": true,
+        "Id": "c2e28f72624a4113acf13b3b9ef32bd8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 700.0,
+        "Y": 390.0
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "d1eb15caee93484f8c345747a3849a49",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1050.0,
+        "Y": 390.0
+      }
+    ],
+    "Annotations": [],
+    "X": 60.0,
+    "Y": 40.0,
+    "Zoom": 0.6
+  }
+}
