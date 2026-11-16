@@ -8,10 +8,9 @@ Tested on Revit 2022/2023 with the Dynamo CPython3 engine.
 | # | Script | Status |
 |---|--------|--------|
 | 01 | Isolated, locked 3D view per FCU | Done |
-| 02 | Number elements along the longest route | In progress |
-| 03 | Tag elements with their number tags | In progress |
-| 04 | Classify fittings to ASHRAE codes | Planned |
-| 05 | Export the route to Excel | Planned |
+| 02 | Number elements along the longest route | Ready for testing |
+| 03 | Tag elements with their number tags | Ready for testing |
+| 04 | Export the route to an Excel pressure-loss sheet (with suggested ASHRAE codes) | Ready for testing |
 
 Each script has its own folder with a README (inputs, wiring, options).
 
