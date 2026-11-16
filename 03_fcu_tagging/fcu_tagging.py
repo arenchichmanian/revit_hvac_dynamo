@@ -13,7 +13,7 @@
 #   v1.1  short ducts left untagged
 #
 # Inputs:
-#   IN[0] view name filter ("contains" match)          e.g. 3D_FCU-LI-L0-095
+#   IN[0] view name filter ("contains" match)          e.g. 3D_FCU-L0-095
 #   IN[1] number parameter                             default DLB_ELEMENT Number
 #   IN[2] tag offset from the element, in paper mm     e.g. 8
 #   IN[3] minimum duct length in mm (0 = rule off)     e.g. 100

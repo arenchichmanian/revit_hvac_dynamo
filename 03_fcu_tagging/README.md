@@ -26,7 +26,7 @@ connect each to its port, add a Watch node on `OUT`, set run mode to Manual.
 
 | Input | Block | Default | Meaning |
 |-------|-------|---------|---------|
-| IN[0] | String | `3D_FCU-LI-L0-095` | View name filter (contains match) |
+| IN[0] | String | `3D_FCU-L0-095` | View name filter (contains match) |
 | IN[1] | String | `DLB_ELEMENT Number` | Parameter holding the numbers |
 | IN[2] | Integer Slider (0-30, step 1) | 8 | Tag offset from the element, in paper mm |
 | IN[3] | Integer Slider (0-500, step 10) | 100 | Minimum duct length in mm (same value as script 02) |
