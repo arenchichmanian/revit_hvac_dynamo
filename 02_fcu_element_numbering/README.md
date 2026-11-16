@@ -21,12 +21,12 @@ connect each to its port, add a Watch node on `OUT`, set run mode to Manual.
 
 | Input | Block | Default | Meaning |
 |-------|-------|---------|---------|
-| IN[0] | String | `FCU-LI-L0-095` | Filter text (contains match; `-` and `.` treated the same) |
+| IN[0] | String | `FCU-L0-095` | Filter text (contains match; `-` and `.` treated the same) |
 | IN[1] | String | `DLB_ELEMENT Number` | Parameter the numbers are written into |
 | IN[2] | Integer Slider (0-500, step 10) | 100 | Minimum duct length in mm (0 = count every duct) |
 | IN[3] | Integer Slider (10-500, step 10) | 100 | Max hops when walking the network |
 | IN[4] | Boolean | `False` | Run. False = preview, nothing written |
-| IN[5] | String | `DLB-Designation` | Parameter the filter searches |
+| IN[5] | String | `Mark` | Parameter the filter searches |
 | IN[6] | String | see below | Options |
 
 All 7 ports must be wired.

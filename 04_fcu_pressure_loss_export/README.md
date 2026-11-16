@@ -38,12 +38,12 @@ Manual.
 
 | Input | Block | Default | Meaning |
 |-------|-------|---------|---------|
-| IN[0] | String | `FCU-LI-L0-095` | Filter text (contains match) |
+| IN[0] | String | `FCU-L0-095` | Filter text (contains match) |
 | IN[1] | String | *(empty)* | Output folder. Empty = `Documents\FCU pressure loss` |
 | IN[2] | Integer Slider (0-500, step 10) | 100 | Minimum duct length in mm (same value as script 02) |
 | IN[3] | Integer Slider (10-500, step 10) | 100 | Max hops (safety limit on the duct walk) |
 | IN[4] | Boolean | `False` | Run. False = preview only, no file written |
-| IN[5] | String | `DLB-Designation` | Parameter to filter on |
+| IN[5] | String | `Mark` | Parameter to filter on |
 | IN[6] | String | see below | Options |
 
 All 7 ports must be wired.

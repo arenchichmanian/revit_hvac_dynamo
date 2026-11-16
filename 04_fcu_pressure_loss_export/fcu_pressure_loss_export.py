@@ -28,13 +28,13 @@
 # between the terminals of that side.
 #
 # Inputs:
-#   IN[0] filter text ("contains" match)               e.g. FCU-LI-L0-095
+#   IN[0] filter text ("contains" match)               e.g. FCU-L0-095
 #   IN[1] output folder (empty = Documents\FCU pressure loss)
 #   IN[2] minimum duct length in mm (0 = rule off)     e.g. 100
 #         use the SAME value as in the numbering script
 #   IN[3] max hops (safety limit for the duct walk)    e.g. 100
 #   IN[4] run (False = preview only, True = write the Excel file)
-#   IN[5] parameter to filter on                       default DLB-Designation
+#   IN[5] parameter to filter on                       default Mark
 #   IN[6] options: "key=value; key=value"
 #           through=word, word      (default fcu-pl, plenum)
 #           safety=number           (default 10) safety margin in percent
@@ -298,7 +298,7 @@ def walk_side(roots, blocked, max_hops, min_len_ft, through_names):
 # ------------------------------------------------------------------
 # Inputs
 # ------------------------------------------------------------------
-DEFAULT_FILTER_PARAM = "DLB-Designation"
+DEFAULT_FILTER_PARAM = "Mark"
 
 DEFAULT_OPTIONS = {
     "through": "fcu-pl, plenum",
@@ -333,7 +333,7 @@ def inp(i, default):
 
 
 def norm(text):
-    """Lowercase and treat '.' like '-' so FCU.LI.L0.016 == FCU-LI-L0-016."""
+    """Lowercase and treat '.' like '-' so FCU.L0.016 == FCU-L0-016."""
     return str(text).strip().lower().replace('.', '-')
 
 
